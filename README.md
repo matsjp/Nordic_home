@@ -1,4 +1,4 @@
-#Nordic_home
+# Nordic_home
 
 This is a project developed by NTNU students on behalf of Nordic Semiconductor.
 

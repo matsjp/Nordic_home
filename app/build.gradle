@@ -18,6 +18,10 @@ android {
     }
     productFlavors {
     }
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
 }
 
 dependencies {
@@ -27,7 +31,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     implementation 'no.nordicsemi.android.support.v18:scanner:1.1.0'
     //Commented out for now due to causing crash on app launch. No clue why
-    //implementation 'no.nordicsemi.android:ble:1.2.0'
+    implementation 'no.nordicsemi.android:ble:1.2.0'
+    implementation project(':meshprovisioner')
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }

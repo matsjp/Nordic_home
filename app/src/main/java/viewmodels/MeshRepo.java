@@ -1,11 +1,15 @@
-package com.example.nordichome;
+package viewmodels;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.Context;
 import android.icu.text.LocaleDisplayNames;
 import android.os.Handler;
+import android.os.ParcelUuid;
 import android.util.Log;
+
+import com.example.nordichome.BleMeshManager;
+import com.example.nordichome.BleMeshManagerCallbacks;
 
 import java.util.UUID;
 
@@ -75,7 +79,7 @@ public class MeshRepo implements MeshProvisioningStatusCallbacks, MeshStatusCall
 
     @Override
     public void onDeviceConnecting(final BluetoothDevice device) {
-        Log.d(TAG, "onDeviceConnecting");
+        Log.d(TAG, "onDeviceConnecting: " + device.getAddress());
     }
 
     @Override
@@ -239,5 +243,9 @@ public class MeshRepo implements MeshProvisioningStatusCallbacks, MeshStatusCall
 
     public UnprovisionedMeshNode getUnprovisionedMeshNode(){
         return mUnprovisionedMeshNode;
+    }
+
+    public void startScan(final UUID filter){
+
     }
 }

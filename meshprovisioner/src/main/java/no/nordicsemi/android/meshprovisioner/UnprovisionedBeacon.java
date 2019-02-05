@@ -27,14 +27,16 @@ public class UnprovisionedBeacon extends MeshBeacon {
      */
     UnprovisionedBeacon(@NonNull final byte[] beaconData) {
         super(beaconData);
-        if(beaconData.length < UnprovisionedBeacon.BEACON_DATA_LENGTH)
-            throw new IllegalArgumentException("Invalid unprovisioned beacon data");
+        /*if(beaconData.length < UnprovisionedBeacon.BEACON_DATA_LENGTH)
+            throw new IllegalArgumentException("Invalid unprovisioned beacon data");*/
 
         final ByteBuffer buffer = ByteBuffer.wrap(beaconData);
         buffer.position(1);
         final long msb = buffer.getLong();
         final long lsb = buffer.getLong();
         uuid = new UUID(msb, lsb);
+        if(buffer.position() == 17)
+            return;
         buffer.get(oobInformation, 0, 2);
         if(buffer.remaining() == 4) {
             buffer.get(uriHash, 0, 4);

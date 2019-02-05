@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Nordic home</string>
+    <string name="unknwon_device">Unknown</string>
 </resources>

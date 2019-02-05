@@ -229,16 +229,20 @@ public class BleMeshManager extends BleManager<BleMeshManagerCallbacks> {
         Log.v(TAG, "Sending data : " + MeshParserUtils.bytesToHex(data, true));
         if (isProvisioningComplete) {
             // Are we connected?
-            if (mMeshProxyDataInCharacteristic == null)
+            if (mMeshProxyDataInCharacteristic == null) {
                 return;
+            }
             final BluetoothGattCharacteristic characteristic = mMeshProxyDataInCharacteristic;
             characteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE);
             writeCharacteristic(characteristic, data);
 
         } else {
             // Are we connected?
-            if (mMeshProvisioningDataInCharacteristic == null)
+            if (mMeshProvisioningDataInCharacteristic == null) {
+                Log.d(TAG, "Found the problem");
                 return;
+            }
+            Log.d(TAG, "Time to write");
             final BluetoothGattCharacteristic characteristic = mMeshProvisioningDataInCharacteristic;
             characteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE);
             writeCharacteristic(characteristic, data);
@@ -264,5 +268,9 @@ public class BleMeshManager extends BleManager<BleMeshManagerCallbacks> {
 
     public boolean isDeviceReady() {
         return mIsDeviceReady;
+    }
+
+    public BluetoothGattCharacteristic getmMeshProvisioningDataInCharacteristic(){
+        return mMeshProvisioningDataInCharacteristic;
     }
 }

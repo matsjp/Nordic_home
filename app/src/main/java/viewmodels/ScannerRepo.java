@@ -1,5 +1,6 @@
 package viewmodels;
 
+import android.app.Application;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
@@ -43,6 +44,7 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
     private boolean isScanning = false;
     private DevicesLiveData mUnprovisionedDevicesLiveData = new DevicesLiveData(true, false);
     private DiscoveredBluetoothDevice discoveredBluetoothDevice;
+    public final static String TAG = "ScannerRepo";
 
     public ScannerRepo(Context context){
         mBleMeshManager = new BleMeshManager(context);
@@ -121,11 +123,14 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
 
     @Override
     public void onDataReceived(BluetoothDevice bluetoothDevice, int mtu, byte[] pdu) {
-
+        Log.d(TAG, "onDataRecieved");
+        mMeshManagerApi.handleNotifications(mtu, pdu);
     }
 
     @Override
     public void onDataSent(BluetoothDevice device, int mtu, byte[] pdu) {
+        Log.d(TAG, "onDataSent");
+        mMeshManagerApi.handleWriteCallbacks(mtu, pdu);
 
     }
 
@@ -136,6 +141,7 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
 
     @Override
     public void onDeviceConnected(BluetoothDevice device) {
+        Log.d(TAG, "onDeviceConnected");
         final UnprovisionedBeacon beacon = (UnprovisionedBeacon) discoveredBluetoothDevice.getBeacon();
         mMeshManagerApi.identifyNode(beacon.getUuid(), "Living Room");
     }
@@ -231,7 +237,8 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
 
     @Override
     public void sendProvisioningPdu(UnprovisionedMeshNode meshNode, byte[] pdu) {
-
+        Log.d("MeshRepo", "sendProvisioningPdu");
+        mBleMeshManager.sendPdu(pdu);
     }
 
     @Override
@@ -241,11 +248,12 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
 
     @Override
     public int getMtu() {
-        return 0;
+        return mBleMeshManager.getMtuSize();
     }
 
     @Override
     public void onProvisioningStateChanged(UnprovisionedMeshNode meshNode, ProvisioningState.States state, byte[] data) {
+        Log.d(TAG, "onProvisionaingStateChanged " + state.toString());
 
     }
 

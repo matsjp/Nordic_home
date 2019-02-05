@@ -29,7 +29,7 @@ import android.os.Parcelable;
 import no.nordicsemi.android.meshprovisioner.MeshBeacon;
 import no.nordicsemi.android.support.v18.scanner.ScanResult;
 
-public class DiscoveredBluetoothDevice implements Parcelable {
+public class  DiscoveredBluetoothDevice implements Parcelable {
 	private final BluetoothDevice device;
 	private ScanResult lastScanResult;
 	private String name;

@@ -1,11 +1,16 @@
 package com.example.nordichome;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.Button;
 
 import com.example.nordichome.adapter.DevicesAdapter;
 import com.example.nordichome.adapter.DiscoveredBluetoothDevice;
@@ -15,6 +20,10 @@ import viewmodels.ScannerRepo;
 public class ScannerActivity extends AppCompatActivity implements DevicesAdapter.OnItemClickListener {
 
     private ScannerRepo scannerRepo;
+
+    private CoordinatorLayout coordinatorLayout;
+    private Button button;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +37,20 @@ public class ScannerActivity extends AppCompatActivity implements DevicesAdapter
         final DevicesAdapter adapter = new DevicesAdapter(this, scannerRepo.getUnprovisionedDevicesLiveData());
         adapter.setOnItemClickListener(this);
         recyclerView.setAdapter(adapter);
+
+        coordinatorLayout = findViewById(R.id.myCoordinatorLayout);
+        button = findViewById(R.id.button);
+
+        button.setOnClickListener(v -> showSnackbar());
+    }
+
+    //Popup for connection to a device. Does not work correctly cant show connected message and then change page.
+    public void showSnackbar() {
+        Snackbar snackbar = Snackbar.make(coordinatorLayout, "Connected", Snackbar.LENGTH_SHORT);
+        snackbar.show();
+        //Starts new activity, LightActivity.
+        final Intent intent = new Intent(ScannerActivity.this, LightActivity.class);
+        startActivity(intent);
     }
 
     @Override

@@ -4,4 +4,6 @@
     <string name="LightSwitch">Light</string>
     <string name="on">On</string>
     <string name="off">Off</string>
+    <string name="connect">Connect</string>
+    <string name="connected">Connected</string>
 </resources>

@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.widget.Button;
 
 import com.example.nordichome.adapter.DevicesAdapter;
@@ -49,8 +48,8 @@ public class ScannerActivity extends AppCompatActivity implements DevicesAdapter
         Snackbar snackbar = Snackbar.make(coordinatorLayout, "Connected", Snackbar.LENGTH_SHORT);
         snackbar.show();
         //Starts new activity, LightActivity.
-        final Intent intent = new Intent(ScannerActivity.this, LightActivity.class);
-        startActivity(intent);
+        //final Intent intent = new Intent(ScannerActivity.this, LightActivity.class);
+        //startActivity(intent);
     }
 
     @Override

@@ -34,7 +34,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.nordichome.MainActivity;
 import com.example.nordichome.R;
@@ -122,7 +121,6 @@ public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.ViewHold
 				public void onClick(View v) {
 					final DiscoveredBluetoothDevice device = mDevices.get(getAdapterPosition());
 					mOnItemClickListener.onItemClick(device);
-					Toast.makeText(mContext, device.getName(), Toast.LENGTH_SHORT).show();
 				}
 			});
 		}

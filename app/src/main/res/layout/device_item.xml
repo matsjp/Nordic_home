@@ -5,13 +5,14 @@
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:padding="15dp"
-    android:background="@color/nordic">
+    android:background="@color/colorPrimaryLight"
+    android:id="@+id/item_box">
 
     <ImageView
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:id="@+id/image"
-        android:src="@mipmap/unknown_icon"/>
+        android:src="@mipmap/node_icon"/>
 
     <TextView
         android:id="@+id/device_name"
@@ -22,10 +23,15 @@
         android:layout_centerVertical="true"
 
         android:text="Dummy device"
-        android:textColor="#fff"
-        android:textSize="17sp" />
+        android:textColor="@color/white"
+        android:textSize="17sp"/>
 
-
+    <!--Divider between items in RecyclerView-->
+    <!--<View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/white"
+        android:layout_alignBottom="@id/image"/>-->
 
 
 

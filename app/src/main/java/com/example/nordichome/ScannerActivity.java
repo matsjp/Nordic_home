@@ -23,8 +23,11 @@ public class ScannerActivity extends AppCompatActivity implements DevicesAdapter
 
         final RecyclerView recyclerView = findViewById(R.id.recycler_view_devices);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        //Dividing items in RecyclerView
         final DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(dividerItemDecoration);
+
         final DevicesAdapter adapter = new DevicesAdapter(this, scannerRepo.getUnprovisionedDevicesLiveData());
         adapter.setOnItemClickListener(this);
         recyclerView.setAdapter(adapter);

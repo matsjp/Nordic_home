@@ -27,12 +27,15 @@ import android.support.annotation.NonNull;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.nordichome.MainActivity;
 import com.example.nordichome.R;
 import com.example.nordichome.ScannerActivity;
 
@@ -107,11 +110,13 @@ public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.ViewHold
 
 	final class ViewHolder extends RecyclerView.ViewHolder {
 		final TextView deviceName;
+		final RelativeLayout itemBox;
 
 		private ViewHolder(@NonNull final View view) {
 			super(view);
 			deviceName = view.findViewById(R.id.device_name);
-			deviceName.setOnClickListener(new View.OnClickListener() {
+			itemBox = view.findViewById(R.id.item_box);
+			itemBox.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					final DiscoveredBluetoothDevice device = mDevices.get(getAdapterPosition());

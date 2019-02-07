@@ -16,7 +16,6 @@ import viewmodels.MeshRepo;
 public class MainActivity extends AppCompatActivity {
 
     private UUID filterUuid = UUID.fromString("00001827-0000-1000-8000-00805F9B34FB");
-    //private UUID filterUuidThingy = UUID.fromString("EF68xxxx-9B35-4933-9B10-52FFA9740042"); //Changed by sunniva
 
 
     private MeshRepo meshRepo;

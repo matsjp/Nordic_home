@@ -47,6 +47,7 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
     private DevicesLiveData mUnprovisionedDevicesLiveData = new DevicesLiveData(true, false);
     private DiscoveredBluetoothDevice discoveredBluetoothDevice;
     public final static String TAG = "ScannerRepo";
+    private Context context;
 
     public ScannerRepo(Context context){
         mBleMeshManager = new BleMeshManager(context);
@@ -56,6 +57,7 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
         mMeshManagerApi.setProvisioningStatusCallbacks(this);
         mMeshManagerApi.setMeshStatusCallbacks(this);
         mMeshManagerApi.loadMeshNetwork();
+        this.context = context;
     }
 
     public DevicesLiveData getUnprovisionedDevicesLiveData() {
@@ -169,12 +171,6 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
     @Override
     public void onDeviceReady(BluetoothDevice device) {
         Log.d(TAG, "onDeviceReady");
-        try {
-            Log.d(TAG, mBleMeshManager.getmMeshProvisioningDataInCharacteristic().toString());
-        }
-        catch (NullPointerException e){
-            Log.d(TAG, "Null pointer error");
-        }
         final UnprovisionedBeacon beacon = (UnprovisionedBeacon) discoveredBluetoothDevice.getBeacon();
         mMeshManagerApi.identifyNode(beacon.getUuid(), "Living Room");
     }
@@ -211,7 +207,7 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
 
     @Override
     public void onNetworkLoaded(MeshNetwork meshNetwork) {
-
+        Log.d(TAG, "onNetworkLoaded");
     }
 
     @Override
@@ -226,12 +222,12 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
 
     @Override
     public void onNetworkImported(MeshNetwork meshNetwork) {
-
+        Log.d(TAG, "onNetworkmported");
     }
 
     @Override
     public void onNetworkImportFailed(String error) {
-
+        Log.d(TAG, "onNetworkImportFailed");
     }
 
     @Override
@@ -241,6 +237,7 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
 
     @Override
     public void onNetworkExportFailed(String error) {
+        Log.d(TAG, "onNetworkExportFailed");
 
     }
 
@@ -278,7 +275,6 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
     @Override
     public void onProvisioningCompleted(ProvisionedMeshNode meshNode, ProvisioningState.States state, byte[] data) {
         Log.d(TAG, "ProvisioningComplete");
-
     }
 
     @Override
@@ -316,5 +312,9 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
     @Override
     public void onMessageDecryptionFailed(String meshLayer, String errorMessage) {
 
+    }
+
+    public MeshManagerApi getMeshManagerApi(){
+        return mMeshManagerApi;
     }
 }

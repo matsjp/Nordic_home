@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import com.example.nordichome.adapter.DevicesAdapter;
 import com.example.nordichome.adapter.DiscoveredBluetoothDevice;
@@ -15,6 +16,7 @@ import viewmodels.ScannerRepo;
 public class ScannerActivity extends AppCompatActivity implements DevicesAdapter.OnItemClickListener {
 
     private ScannerRepo scannerRepo;
+    private String TAG = ScannerActivity.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

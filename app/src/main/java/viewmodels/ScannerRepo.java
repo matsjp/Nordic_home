@@ -37,6 +37,8 @@ import no.nordicsemi.android.support.v18.scanner.ScanResult;
 import no.nordicsemi.android.support.v18.scanner.ScanSettings;
 import viewmodels.DevicesLiveData;
 
+import static no.nordicsemi.android.meshprovisioner.provisionerstates.ProvisioningState.States.PROVISIONING_CAPABILITIES;
+
 public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallbacks, MeshStatusCallbacks, MeshProvisioningStatusCallbacks {
 
     private MeshManagerApi mMeshManagerApi;
@@ -45,6 +47,7 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
     private DevicesLiveData mUnprovisionedDevicesLiveData = new DevicesLiveData(true, false);
     private DiscoveredBluetoothDevice discoveredBluetoothDevice;
     public final static String TAG = "ScannerRepo";
+    private Context context;
 
     public ScannerRepo(Context context){
         mBleMeshManager = new BleMeshManager(context);
@@ -54,6 +57,7 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
         mMeshManagerApi.setProvisioningStatusCallbacks(this);
         mMeshManagerApi.setMeshStatusCallbacks(this);
         mMeshManagerApi.loadMeshNetwork();
+        this.context = context;
     }
 
     public DevicesLiveData getUnprovisionedDevicesLiveData() {
@@ -142,8 +146,6 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
     @Override
     public void onDeviceConnected(BluetoothDevice device) {
         Log.d(TAG, "onDeviceConnected");
-        final UnprovisionedBeacon beacon = (UnprovisionedBeacon) discoveredBluetoothDevice.getBeacon();
-        mMeshManagerApi.identifyNode(beacon.getUuid(), "Living Room");
     }
 
     @Override
@@ -168,6 +170,9 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
 
     @Override
     public void onDeviceReady(BluetoothDevice device) {
+        Log.d(TAG, "onDeviceReady");
+        final UnprovisionedBeacon beacon = (UnprovisionedBeacon) discoveredBluetoothDevice.getBeacon();
+        mMeshManagerApi.identifyNode(beacon.getUuid(), "Living Room");
     }
 
     @Override
@@ -202,7 +207,7 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
 
     @Override
     public void onNetworkLoaded(MeshNetwork meshNetwork) {
-
+        Log.d(TAG, "onNetworkLoaded");
     }
 
     @Override
@@ -217,12 +222,12 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
 
     @Override
     public void onNetworkImported(MeshNetwork meshNetwork) {
-
+        Log.d(TAG, "onNetworkmported");
     }
 
     @Override
     public void onNetworkImportFailed(String error) {
-
+        Log.d(TAG, "onNetworkImportFailed");
     }
 
     @Override
@@ -232,6 +237,7 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
 
     @Override
     public void onNetworkExportFailed(String error) {
+        Log.d(TAG, "onNetworkExportFailed");
 
     }
 
@@ -254,17 +260,21 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
     @Override
     public void onProvisioningStateChanged(UnprovisionedMeshNode meshNode, ProvisioningState.States state, byte[] data) {
         Log.d(TAG, "onProvisionaingStateChanged " + state.toString());
-
+        if (state == PROVISIONING_CAPABILITIES){
+            Log.d(TAG, "Starting provisioning");
+            mMeshManagerApi.startProvisioning(meshNode);
+        }
     }
 
     @Override
     public void onProvisioningFailed(UnprovisionedMeshNode meshNode, ProvisioningState.States state, byte[] data) {
+        Log.d(TAG, "onProvisioningFailed");
 
     }
 
     @Override
     public void onProvisioningCompleted(ProvisionedMeshNode meshNode, ProvisioningState.States state, byte[] data) {
-
+        Log.d(TAG, "ProvisioningComplete");
     }
 
     @Override
@@ -279,11 +289,13 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
 
     @Override
     public void onBlockAcknowledgementSent(byte[] dst) {
+        Log.d(TAG, "onBLockAcknoledgementSend");
 
     }
 
     @Override
     public void onBlockAcknowledgementReceived(byte[] src) {
+        Log.d(TAG, "onBlockAcknowledgementReceived");
 
     }
 
@@ -300,5 +312,9 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
     @Override
     public void onMessageDecryptionFailed(String meshLayer, String errorMessage) {
 
+    }
+
+    public MeshManagerApi getMeshManagerApi(){
+        return mMeshManagerApi;
     }
 }

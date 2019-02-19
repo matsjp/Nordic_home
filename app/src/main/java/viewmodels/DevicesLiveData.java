@@ -43,6 +43,7 @@ import no.nordicsemi.android.support.v18.scanner.ScanResult;
 @SuppressWarnings("unused")
 public class DevicesLiveData extends LiveData<List<DiscoveredBluetoothDevice>> {
 	private static final ParcelUuid FILTER_UUID = new ParcelUuid(BleMeshManager.MESH_PROVISIONING_UUID);
+
 	private static final int FILTER_RSSI = -50; // [dBm]
 
 	private final List<DiscoveredBluetoothDevice> mDevices = new ArrayList<>();
@@ -155,4 +156,5 @@ public class DevicesLiveData extends LiveData<List<DiscoveredBluetoothDevice>> {
 
 		return rssi >= FILTER_RSSI;
 	}
+
 }

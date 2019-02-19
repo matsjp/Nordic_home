@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Button;
 
+
 import com.example.nordichome.adapter.DevicesAdapter;
 import com.example.nordichome.adapter.DiscoveredBluetoothDevice;
 
@@ -23,6 +24,7 @@ public class ScannerActivity extends AppCompatActivity implements DevicesAdapter
     private CoordinatorLayout coordinatorLayout;
     private Button button;
 
+    private String TAG = ScannerActivity.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,8 +33,11 @@ public class ScannerActivity extends AppCompatActivity implements DevicesAdapter
 
         final RecyclerView recyclerView = findViewById(R.id.recycler_view_devices);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        //Dividing items in RecyclerView
         final DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(dividerItemDecoration);
+
         final DevicesAdapter adapter = new DevicesAdapter(this, scannerRepo.getUnprovisionedDevicesLiveData());
         adapter.setOnItemClickListener(this);
         recyclerView.setAdapter(adapter);

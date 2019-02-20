@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.CompoundButton;
+import android.widget.ToggleButton;
 
 import com.example.nordichome.adapter.ProvisionedNodesAdapter;
 
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_main);
+
         final FloatingActionButton addDevice = findViewById(R.id.add_device);
 
 

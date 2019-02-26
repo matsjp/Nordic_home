@@ -33,8 +33,7 @@
         android:layout_centerVertical="true"
         android:layout_marginEnd="2dp"
         android:textOff="Light on"
-        android:textOn="Light off"
-        android:onClick="onLightChanged"/>
+        android:textOn="Light off" />
 
 
     <!--Divider between items in RecyclerView-->

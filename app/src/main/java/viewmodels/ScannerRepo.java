@@ -236,8 +236,7 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
                 public void run() {
                     mMeshManagerApi.sendMeshMessage(reconnectionNode.getUnicastAddress(), configAppKeyAdd);
                 }
-            }, 5000);
-            //mMeshManagerApi.sendMeshMessage(reconnectionNode.getUnicastAddress(), configAppKeyAdd);
+            }, 2000);
         }
         else {
             final UnprovisionedBeacon beacon = (UnprovisionedBeacon) discoveredBluetoothDevice.getBeacon();
@@ -320,6 +319,7 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
     @Override
     public void sendMeshPdu(byte[] pdu) {
         Log.d(TAG, "sendMeshPdu");
+        mBleMeshManager.sendPdu(pdu);
     }
 
     @Override

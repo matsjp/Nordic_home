@@ -8,7 +8,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.example.nordichome.MainActivity;
 import com.example.nordichome.R;
@@ -21,11 +25,11 @@ import viewmodels.ProvisionedNodesViewmodes;
 
 public class ProvisionedNodesAdapter extends RecyclerView.Adapter<ProvisionedNodesAdapter.ViewHolder> {
     private LayoutInflater mInflater;
-    private ItemClickListener mClickListener;
     private ArrayList<ProvisionedMeshNode> nodesList = new ArrayList<ProvisionedMeshNode>();
     private Context context;
     private ProvisionedNodesViewmodes view;
     public static String TAG = ProvisionedMeshNode.class.getSimpleName();
+    private OnItemClickListener onItemClickListener;
 
     // data is passed into the constructor
     public ProvisionedNodesAdapter(MainActivity context, ProvisionedNodesViewmodes view) {
@@ -41,6 +45,10 @@ public class ProvisionedNodesAdapter extends RecyclerView.Adapter<ProvisionedNod
                 notifyDataSetChanged();
             }
         });
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener){
+        onItemClickListener = listener;
     }
 
     // inflates the row layout from xml when needed
@@ -64,18 +72,22 @@ public class ProvisionedNodesAdapter extends RecyclerView.Adapter<ProvisionedNod
 
 
     // stores and recycles views as they are scrolled off screen
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         TextView myTextView;
+        ToggleButton myToggleButton;
+        RelativeLayout itemBox;
 
         ViewHolder(View itemView) {
             super(itemView);
             myTextView = itemView.findViewById(R.id.device_name);
-            itemView.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View view) {
-            if (mClickListener != null) mClickListener.onItemClick(view, getAdapterPosition());
+            itemBox = itemView.findViewById(R.id.item_box);
+            itemBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ProvisionedMeshNode node = nodesList.get(getAdapterPosition());
+                    onItemClickListener.onItemClick(node);
+                }
+            });
         }
     }
 
@@ -85,7 +97,7 @@ public class ProvisionedNodesAdapter extends RecyclerView.Adapter<ProvisionedNod
     }
 
     // parent activity will implement this method to respond to click events
-    public interface ItemClickListener {
-        void onItemClick(View view, int position);
+    public interface OnItemClickListener {
+        void onItemClick(ProvisionedMeshNode node);
     }
 }

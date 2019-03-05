@@ -21,7 +21,8 @@ public class ScannerActivity extends AppCompatActivity implements DevicesAdapter
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scanner);
-        scannerRepo = new ScannerRepo(this);
+        ApplicationExtension application = (ApplicationExtension) getApplication();
+        scannerRepo = application.getScannerRepo();
 
         final RecyclerView recyclerView = findViewById(R.id.recycler_view_devices);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -38,6 +39,18 @@ public class ScannerActivity extends AppCompatActivity implements DevicesAdapter
     @Override
     protected void onStart() {
         super.onStart();
+        scannerRepo.startScan(BleMeshManager.MESH_PROVISIONING_UUID);
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        scannerRepo.stopScan();
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
         scannerRepo.startScan(BleMeshManager.MESH_PROVISIONING_UUID);
     }
 

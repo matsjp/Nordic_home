@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 import android.support.v4.app.ActivityCompat;
@@ -27,10 +28,13 @@ import no.nordicsemi.android.meshprovisioner.MeshManagerApi;
 import no.nordicsemi.android.meshprovisioner.MeshManagerCallbacks;
 import no.nordicsemi.android.meshprovisioner.MeshNetwork;
 import no.nordicsemi.android.meshprovisioner.provisionerstates.UnprovisionedMeshNode;
+import no.nordicsemi.android.meshprovisioner.transport.GenericOnOffGet;
+import no.nordicsemi.android.meshprovisioner.transport.GenericOnOffSet;
 import no.nordicsemi.android.meshprovisioner.transport.ProvisionedMeshNode;
 import viewmodels.ProvisionedNodesViewmodes;
+import viewmodels.ScannerRepo;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ProvisionedNodesAdapter.OnItemClickListener{
 
     //private static final int REQUEST_ACCESS_COARSE_LOCATION = 1022; // random number
     private static final int REQUEST_ENABLE_BT = 1;
@@ -38,12 +42,16 @@ public class MainActivity extends AppCompatActivity {
     public MeshNetwork meshNetwork;
     ProvisionedNodesAdapter adapter;
     public ProvisionedNodesViewmodes view;
+    private ScannerRepo scannerRepo;
+    private boolean lightState = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_main);
+        ApplicationExtension application = (ApplicationExtension) getApplication();
+        scannerRepo = application.getScannerRepo();
 
         final FloatingActionButton addDevice = findViewById(R.id.add_device);
 
@@ -54,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         ArrayList<String> data = new ArrayList<String>();
         adapter = new ProvisionedNodesAdapter(this, view);
+        adapter.setOnItemClickListener(this);
         recyclerView.setAdapter(adapter);
 
         this.enableBluetooth();
@@ -112,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume(){
         super.onResume();
+        Log.d(TAG, "Connected: " + Boolean.toString(this.scannerRepo.getBleMeshManager().isConnected()));
         MeshManagerApi meshManagerApi = new MeshManagerApi(this);
         meshManagerApi.setMeshManagerCallbacks(this.meshManagerCallbacks);
         meshManagerApi.loadMeshNetwork();
@@ -173,4 +183,15 @@ public class MainActivity extends AppCompatActivity {
             return 0;
         }
     };
+
+    @Override
+    public void onItemClick(ProvisionedMeshNode node) {
+        Log.d(TAG, "onItemClicked");
+        byte[] appKey = scannerRepo.getMeshManagerApi().getMeshNetwork().getAppKey(0).getKey();
+        GenericOnOffSet genericOnOffSet = new GenericOnOffSet(appKey, lightState, 500);
+        lightState = !lightState;
+        BleMeshManager meshManager = scannerRepo.getBleMeshManager();
+        Log.d(TAG, Boolean.toString(meshManager.isConnected()));
+        scannerRepo.getMeshManagerApi().sendMeshMessage(node.getUnicastAddress(), genericOnOffSet);
+    }
 }

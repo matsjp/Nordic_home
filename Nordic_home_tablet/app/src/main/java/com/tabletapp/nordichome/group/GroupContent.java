@@ -5,54 +5,62 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.tabletapp.nordichome.group.GroupItem;
+
 /**
- * Helper class for providing sample content for user interfaces created by
- * Android template wizards.
- * <p>
- * TODO: Replace all uses of this class before publishing your app.
+ * Class used to preview the information belonging to the groups in the Nordic Home
+ * @author Sunniva Mathea Runde
+ * @author Heidi Lohne Braekke
  */
+
 public class GroupContent {
 
     /**
-     * An array of sample (group) items.
+     * An array of group items
      */
-    public static final List<GroupItem> ITEMS = new ArrayList<GroupItem>();
+    public static final List<GroupItem> ITEMS = new ArrayList<>();
 
     /**
      * A map of sample (group) items, by ID.
      */
-    public static final Map<String, GroupItem> ITEM_MAP = new HashMap<String, GroupItem>();
+    public static final Map<String, GroupItem> ITEM_MAP = new HashMap<>();
 
-    private static final int COUNT = 25;
 
     static {
-        // Add some sample items.
-        for (int i = 1; i <= COUNT; i++) {
-            addItem(createGroupItem(i));
+        ArrayList<GroupItem> groups = new ArrayList<>();
+
+        //Adds sample groups
+        groups.add(new GroupItem("Kitchen"));
+        groups.add(new GroupItem("Bathroom"));
+        groups.add(new GroupItem("Bedroom"));
+        groups.add(new GroupItem("Livingroom"));
+
+        for (GroupItem group : groups) {
+            addItem(group);
         }
     }
 
-    private static void addItem(GroupItem item) {
+   private static void addItem(GroupItem item) {
         ITEMS.add(item);
-        ITEM_MAP.put(item.id, item);
+        ITEM_MAP.put(item.name, item);
+    }
+/*
+    private static GroupItem createGroupItem(String name) {
+        return new GroupItem(name);
     }
 
-    private static GroupItem createGroupItem(int position) {
-        return new GroupItem(String.valueOf(position), "GroupItem " + position, makeDetails(position));
-    }
-
-    private static String makeDetails(int position) {
+/*    private static String makeDetails(int position) {
         StringBuilder builder = new StringBuilder();
         builder.append("Details about GroupItem: ").append(position);
         for (int i = 0; i < position; i++) {
             builder.append("\nMore details information here.");
         }
         return builder.toString();
-    }
+    }*/
 
-    /**
+/*    *//**
      * A group item representing a piece of content.
-     */
+     *//*
     public static class GroupItem {
         public final String id;
         public final String content;
@@ -68,5 +76,5 @@ public class GroupContent {
         public String toString() {
             return content;
         }
-    }
+    }*/
 }

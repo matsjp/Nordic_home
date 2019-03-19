@@ -3,7 +3,7 @@ package com.tabletapp.nordichome;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class Homepage extends AppCompatActivity {
+public class HomePageActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

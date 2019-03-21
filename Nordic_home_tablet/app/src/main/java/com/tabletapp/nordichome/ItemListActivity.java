@@ -9,9 +9,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tabletapp.nordichome.group.GroupContent;
 import com.tabletapp.nordichome.group.GroupItem;
@@ -33,6 +36,8 @@ public class ItemListActivity extends AppCompatActivity {
      * device.
      */
     private boolean mTwoPane;
+    //TODO: get networkname/address from JSON file.
+    private String networkAddress = "Bakkegata 2";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +49,8 @@ public class ItemListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
+        TextView txtAddress = (TextView) findViewById(R.id.txtAddress);
+        txtAddress.setText(networkAddress);
 
         if (findViewById(R.id.item_detail_container) != null) {
             // The detail container view will be present only in the
@@ -56,10 +63,46 @@ public class ItemListActivity extends AppCompatActivity {
         View recyclerView = findViewById(R.id.item_list);
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
+
+
+        Boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE)
+                .getBoolean("isFirstRun", true);
+
+        if (isFirstRun) {
+            //show sign up activity
+            startActivity(new Intent(ItemListActivity.this, HomePageActivity.class));
+            Toast.makeText(ItemListActivity.this, "Run only once", Toast.LENGTH_LONG)
+                    .show();
+        }
+
+
+        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit()
+                .putBoolean("isFirstRun", false).commit();
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, GroupContent.ITEMS, mTwoPane));
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //Inflates the menu and update JSON actions in the actionbar
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                //TODO: user wants to update the JSON fil - Redirect to google login
+                return true;
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
+        }
     }
 
     public static class SimpleItemRecyclerViewAdapter

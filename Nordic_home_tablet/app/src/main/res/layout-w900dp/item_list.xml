@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
+    android:layout_marginLeft="0dp"
+    android:layout_marginRight="0dp"
     android:baselineAligned="false"
     android:divider="?android:attr/dividerHorizontal"
     android:orientation="horizontal"
@@ -18,22 +18,54 @@
     
     -->
 
-    <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/item_list"
-        android:name="com.tabletapp.nordichome.ItemListFragment"
+    <TableLayout
         android:layout_width="@dimen/item_width"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        app:layoutManager="LinearLayoutManager"
-        tools:context="com.tabletapp.nordichome.ItemListActivity"
-        tools:listitem="@layout/item_list_content" />
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/txtMyHome"
+            android:layout_width="match_parent"
+            android:layout_height="31dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="0dp"
+            android:text="My Home"
+            android:textSize="20dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="20dp" />
+
+        <TextView
+            android:id="@+id/txtAddress"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="address"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="20dp" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#F0F0F0" />
+
+        <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/item_list"
+            android:name="com.tabletapp.nordichome.ItemListFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="0dp"
+            app:layoutManager="LinearLayoutManager"
+            tools:context="com.tabletapp.nordichome.ItemListActivity"
+            tools:listitem="@layout/item_list_content" />
+
+    </TableLayout>
 
     <FrameLayout
         android:id="@+id/item_detail_container"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="3" />
+        android:layout_weight="3"/>
 
 </LinearLayout>

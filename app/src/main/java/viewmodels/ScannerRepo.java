@@ -1,10 +1,11 @@
 package viewmodels;
 
 import android.app.Application;
+import android.arch.lifecycle.MutableLiveData;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGattCallback;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.ColorSpace;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.ParcelUuid;
@@ -16,16 +17,12 @@ import com.example.nordichome.BleMeshManager;
 import com.example.nordichome.BleMeshManagerCallbacks;
 import com.example.nordichome.adapter.DiscoveredBluetoothDevice;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.UUID;
 
-import no.nordicsemi.android.meshprovisioner.MeshBeacon;
 import no.nordicsemi.android.meshprovisioner.MeshManagerApi;
 import no.nordicsemi.android.meshprovisioner.MeshManagerCallbacks;
 import no.nordicsemi.android.meshprovisioner.MeshNetwork;
@@ -41,7 +38,6 @@ import no.nordicsemi.android.meshprovisioner.transport.ConfigCompositionDataStat
 import no.nordicsemi.android.meshprovisioner.transport.ConfigModelAppBind;
 import no.nordicsemi.android.meshprovisioner.transport.ConfigModelAppStatus;
 import no.nordicsemi.android.meshprovisioner.transport.Element;
-import no.nordicsemi.android.meshprovisioner.transport.GenericOnOffSet;
 import no.nordicsemi.android.meshprovisioner.transport.GenericOnOffStatus;
 import no.nordicsemi.android.meshprovisioner.transport.MeshMessage;
 import no.nordicsemi.android.meshprovisioner.transport.MeshModel;
@@ -72,7 +68,14 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
     private Handler handler;
     private ConfigCompositionDataStatus configCompositionDataStatus;
     private MeshNetwork meshNetwork;
-    private Map<MeshModel, byte[]> meshModels = new HashMap<>();
+    private Map<MeshModel, Integer> meshModels = new HashMap<>();
+
+    private UnprovisionedMeshNode currentUnprovisionedMeshNode;
+
+    private MutableLiveData<Boolean> identifyReady = new MutableLiveData<>();
+    private MutableLiveData<BluetoothDevice> connectedDevice = new MutableLiveData<>();
+    private MutableLiveData<Boolean> isConnecting = new MutableLiveData<>();
+    private MutableLiveData<Boolean> isDisconnecting = new MutableLiveData<>();
 
     public ScannerRepo(Context context){
         mBleMeshManager = new BleMeshManager(context);
@@ -116,6 +119,16 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
         isScanning = false;
     }
 
+    public void identifyNode(UnprovisionedBeacon beacon){
+        mMeshManagerApi.identifyNode(beacon.getUuid(), "Temp name");
+    }
+
+    public void provisionCurrentUnprovisionedMesNode(){
+        if (currentUnprovisionedMeshNode != null) {
+            mMeshManagerApi.startProvisioning(currentUnprovisionedMeshNode);
+        }
+    }
+
     @Nullable
     public static byte[] getServiceData(@NonNull final ScanResult result, @NonNull final UUID serviceUuid) {
         final ScanRecord scanRecord = result.getScanRecord();
@@ -129,8 +142,13 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
         @Override
         public void onScanResult(final int callbackType, final ScanResult result){
             String address = result.getDevice().getAddress();
-            if (mUnprovisionedDevicesLiveData.deviceDiscovered(result, mMeshManagerApi.getMeshBeacon(getServiceData(result, BleMeshManager.MESH_PROVISIONING_UUID)))) {
-                mUnprovisionedDevicesLiveData.applyFilter();
+            try {
+                if (mUnprovisionedDevicesLiveData.deviceDiscovered(result, mMeshManagerApi.getMeshBeacon(getServiceData(result, BleMeshManager.MESH_PROVISIONING_UUID)))) {
+                    mUnprovisionedDevicesLiveData.applyFilter();
+                }
+            }
+            catch(IllegalArgumentException e){
+                Log.d(TAG, "Illegal argument. No clue why it's broken " + e.toString());
             }
         }
 
@@ -166,22 +184,25 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
 
     @Override
     public void onDeviceConnecting(BluetoothDevice device) {
-
+        Log.d(TAG, "onDeviceConnecting");
     }
 
     @Override
     public void onDeviceConnected(BluetoothDevice device) {
         Log.d(TAG, "onDeviceConnected");
+        isConnecting.postValue(false);
+        connectedDevice.postValue(device);
     }
 
     @Override
     public void onDeviceDisconnecting(BluetoothDevice device) {
-
+        Log.d(TAG, "onDeviceDisconnecting");
     }
 
     @Override
     public void onDeviceDisconnected(BluetoothDevice device) {
         Log.d(TAG, "onDeviceDisconnected");
+        connectedDevice.postValue(null);
         stopScan();
         if (isReconnecting){
             isReconnecting = false;
@@ -200,7 +221,6 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
             scanner2.startScan(filters, settings, new ScanCallback() {
                 @Override
                 public void onScanResult(int callbackType, ScanResult result) {
-                    Log.d(TAG, "onScanResult");
                     final ScanRecord scanRecord = result.getScanRecord();
                     if (scanRecord != null) {
                         final byte[] serviceData = getServiceData(result, MESH_PROXY_UUID);
@@ -247,16 +267,17 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
             alreadyProvisioned = false;
             Log.d(TAG, "alreadyProvisioned");
             ConfigCompositionDataGet configCompositionDataGet = new ConfigCompositionDataGet();
+            Log.d(TAG, "Pause");
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    Log.d(TAG, "Sending mesh message");
                     mMeshManagerApi.sendMeshMessage(reconnectionNode.getUnicastAddress(), configCompositionDataGet);
                 }
             }, 1000);
         }
         else {
-            final UnprovisionedBeacon beacon = (UnprovisionedBeacon) discoveredBluetoothDevice.getBeacon();
-            mMeshManagerApi.identifyNode(beacon.getUuid(), "Living Room");
+            identifyReady.postValue(true);
         }
     }
 
@@ -294,6 +315,8 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
     public void onNetworkLoaded(MeshNetwork meshNetwork) {
         Log.d(TAG, "onNetworkLoaded");
         this.meshNetwork = meshNetwork;
+        Log.d(TAG, meshNetwork.getMeshUUID());
+        //mMeshManagerApi.exportMeshNetwork(context.getFilesDir().getPath());
     }
 
     @Override
@@ -306,9 +329,19 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
 
     }
 
+    private void loadNetwork(final MeshNetwork meshNetwork) {
+        this.meshNetwork = meshNetwork;
+    }
+
     @Override
     public void onNetworkImported(MeshNetwork meshNetwork) {
         Log.d(TAG, "onNetworkmported");
+        final MeshNetwork oldNet = this.meshNetwork;
+        if (!oldNet.getMeshUUID().equals(meshNetwork.getMeshUUID())) {
+            mMeshManagerApi.deleteMeshNetworkFromDb(oldNet);
+        }
+        loadNetwork(meshNetwork);
+        Log.d(TAG, meshNetwork.getMeshUUID());
         //Pay attention to global meshNetwork variable
     }
 
@@ -319,7 +352,13 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
 
     @Override
     public void onNetworkExported(MeshNetwork meshNetwork) {
+        Log.d(TAG, "onNetworkExported");
 
+    }
+
+    @Override
+    public void onNetworkExportedJson(MeshNetwork meshNetwork, String networkJson) {
+        Log.d(TAG, "onNetworkExportedJson");
     }
 
     @Override
@@ -348,9 +387,10 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
     @Override
     public void onProvisioningStateChanged(UnprovisionedMeshNode meshNode, ProvisioningState.States state, byte[] data) {
         Log.d(TAG, "onProvisionaingStateChanged " + state.toString());
+        currentUnprovisionedMeshNode = meshNode;
         if (state == PROVISIONING_CAPABILITIES){
             Log.d(TAG, "Starting provisioning");
-            mMeshManagerApi.startProvisioning(meshNode);
+            //mMeshManagerApi.startProvisioning(meshNode);
         }
     }
 
@@ -374,8 +414,18 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
     }
 
     @Override
+    public void onTransactionFailed(int dst, boolean hasIncompleteTimerExpired) {
+
+    }
+
+    @Override
     public void onUnknownPduReceived(byte[] src, byte[] accessPayload) {
         Log.d(TAG, "onUnknownPduReceived");
+    }
+
+    @Override
+    public void onUnknownPduReceived(int src, byte[] accessPayload) {
+
     }
 
     @Override
@@ -385,8 +435,18 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
     }
 
     @Override
+    public void onBlockAcknowledgementSent(int dst) {
+
+    }
+
+    @Override
     public void onBlockAcknowledgementReceived(byte[] src) {
         Log.d(TAG, "onBlockAcknowledgementReceived");
+
+    }
+
+    @Override
+    public void onBlockAcknowledgementReceived(int src) {
 
     }
 
@@ -398,8 +458,15 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
     }
 
     @Override
-    public void onMeshMessageReceived(byte[] src, MeshMessage meshMessage) {
+    public void onMeshMessageSent(int dst, MeshMessage meshMessage) {
+        Log.d(TAG, "onMEshMessageSent");
+        Log.d(TAG, meshMessage.toString());
+    }
+
+    @Override
+    public void onMeshMessageReceived(int src, MeshMessage meshMessage) {
         Log.d(TAG, "onMesMessageReceived");
+        Log.d(TAG, meshMessage.toString());
         if (meshMessage instanceof ConfigCompositionDataStatus){
             Log.d(TAG, "ConfigCompositionDataStatus");
             configCompositionDataStatus = (ConfigCompositionDataStatus) meshMessage;
@@ -420,7 +487,7 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
                 }
                 if (!meshModels.isEmpty()){
                     MeshModel meshModel = new ArrayList<>(meshModels.keySet()).get(0);
-                    byte[] elementAddress = meshModels.remove(meshModel);
+                    Integer elementAddress = meshModels.remove(meshModel);
                     if (elementAddress != null) {
                         ConfigModelAppBind configModelAppBind = new ConfigModelAppBind(elementAddress, meshModel.getModelId(), 0);
                         mMeshManagerApi.sendMeshMessage(src, configModelAppBind);
@@ -435,25 +502,25 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
             }
             if (!meshModels.isEmpty()){
                 MeshModel meshModel = new ArrayList<>(meshModels.keySet()).get(0);
-                byte[] elementAddress = meshModels.remove(meshModel);
+                Integer elementAddress = meshModels.remove(meshModel);
                 if (elementAddress != null) {
                     ConfigModelAppBind configModelAppBind = new ConfigModelAppBind(elementAddress, meshModel.getModelId(), 0);
                     mMeshManagerApi.sendMeshMessage(src, configModelAppBind);
                 }
             }
-            /*else{
-                Log.d("TAG", "Light switch");
-                Log.d(TAG, "Sending Generic On Off");
-                byte[] appKey = mMeshManagerApi.getMeshNetwork().getAppKey(0).getKey();
-                GenericOnOffSet genericOnOffSet = new GenericOnOffSet(appKey, true, 500);
-                mMeshManagerApi.sendMeshMessage(src, genericOnOffSet);
-            }*/
         }
         else if (meshMessage instanceof GenericOnOffStatus){
             Log.d(TAG, "GenericOnOffStatus");
             GenericOnOffStatus genericOnOffStatus = (GenericOnOffStatus) meshMessage;
             Log.d(TAG, "Current light state: " + Boolean.toString(genericOnOffStatus.getPresentState()));
         }
+    }
+
+    @Override
+    public void onMeshMessageReceived(byte[] src, MeshMessage meshMessage) {
+        Log.d(TAG, "onMeshMessageReceived");
+        Log.d(TAG, meshMessage.toString());
+
     }
 
     @Override

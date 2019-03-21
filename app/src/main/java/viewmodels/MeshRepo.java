@@ -38,8 +38,18 @@ public class MeshRepo implements MeshProvisioningStatusCallbacks, MeshStatusCall
     }
 
     @Override
+    public void onTransactionFailed(int dst, boolean hasIncompleteTimerExpired) {
+
+    }
+
+    @Override
     public void onUnknownPduReceived(final byte[] src, final byte[] accessPayload) {
         Log.d(TAG, "onUnknownPduReceived");
+    }
+
+    @Override
+    public void onUnknownPduReceived(int src, byte[] accessPayload) {
+
     }
 
     @Override
@@ -48,8 +58,18 @@ public class MeshRepo implements MeshProvisioningStatusCallbacks, MeshStatusCall
     }
 
     @Override
+    public void onBlockAcknowledgementSent(int dst) {
+
+    }
+
+    @Override
     public void onBlockAcknowledgementReceived(final byte[] src) {
         Log.d(TAG, "onBlockAcknowledgementReceived");
+    }
+
+    @Override
+    public void onBlockAcknowledgementReceived(int src) {
+
     }
 
     @Override
@@ -58,8 +78,18 @@ public class MeshRepo implements MeshProvisioningStatusCallbacks, MeshStatusCall
     }
 
     @Override
+    public void onMeshMessageSent(int dst, MeshMessage meshMessage) {
+
+    }
+
+    @Override
     public void onMeshMessageReceived(final byte[] src, final MeshMessage meshMessage) {
         Log.d(TAG, "onMeshMessageReceived");
+    }
+
+    @Override
+    public void onMeshMessageReceived(int src, MeshMessage meshMessage) {
+
     }
 
     @Override
@@ -184,6 +214,11 @@ public class MeshRepo implements MeshProvisioningStatusCallbacks, MeshStatusCall
     @Override
     public void onNetworkExported(final MeshNetwork meshNetwork) {
         Log.d("MeshRepo", "onNetworkExported");
+    }
+
+    @Override
+    public void onNetworkExportedJson(MeshNetwork meshNetwork, String networkJson) {
+
     }
 
     @Override

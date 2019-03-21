@@ -27,17 +27,13 @@ import android.support.annotation.NonNull;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
-import com.example.nordichome.MainActivity;
 import com.example.nordichome.R;
 import com.example.nordichome.ScannerActivity;
 
@@ -50,15 +46,45 @@ public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.ViewHold
 	private final Context mContext;
 	private List<DiscoveredBluetoothDevice> mDevices;
 	private OnItemClickListener mOnItemClickListener;
+	private ConnectButtonClickListener connectButtonClickListener;
+	private IdentifyButtonClickListener identifyButtonClickListener;
+	private ProvisionButtonClickListener provisionButtonClickListener;
 
 	@FunctionalInterface
 	public interface OnItemClickListener {
 		void onItemClick(@NonNull final DiscoveredBluetoothDevice device);
 	}
 
+	@FunctionalInterface
+	public interface ConnectButtonClickListener{
+	    void onConnectButtonClick(@NonNull final DiscoveredBluetoothDevice device);
+    }
+
+    @FunctionalInterface
+    public interface  IdentifyButtonClickListener{
+	    void onIdentifyButtonClick(@NonNull final DiscoveredBluetoothDevice device);
+    }
+
+    @FunctionalInterface
+    public interface ProvisionButtonClickListener{
+	    void onProvisionButtonClickListener();
+    }
+
 	public void setOnItemClickListener(final OnItemClickListener listener) {
 		mOnItemClickListener = listener;
 	}
+
+	public void setConnectButtonClickListener(final ConnectButtonClickListener listener){
+	    connectButtonClickListener = listener;
+    }
+
+    public void setIdentifyButtonClickListener(final IdentifyButtonClickListener listener){
+	    identifyButtonClickListener = listener;
+    }
+
+    public void setProvisionButtonClickListener(ProvisionButtonClickListener listener){
+	    provisionButtonClickListener = listener;
+    }
 
 	@SuppressWarnings("ConstantConditions")
 	public DevicesAdapter(@NonNull final ScannerActivity activity,
@@ -113,7 +139,9 @@ public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.ViewHold
 	final class ViewHolder extends RecyclerView.ViewHolder {
 		final TextView deviceName;
 		final RelativeLayout itemBox;
-		final ToggleButton toggleButton;
+		final Button connectButton;
+		final Button identifyButton;
+		final Button provisionButton;
 
 
 
@@ -121,16 +149,40 @@ public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.ViewHold
 		private ViewHolder(@NonNull final View view) {
 			super(view);
 			deviceName = view.findViewById(R.id.device_name);
-			toggleButton = view.findViewById(R.id.toggle_Button);
-			toggleButton.setVisibility(View.GONE);
+			connectButton = view.findViewById(R.id.connectButton);
+			identifyButton = view.findViewById(R.id.identifyButton);
+			provisionButton = view.findViewById(R.id.provisionButton);
 			itemBox = view.findViewById(R.id.item_box);
-			itemBox.setOnClickListener(new View.OnClickListener() {
+
+			connectButton.setOnClickListener(new View.OnClickListener(){
+			    @Override
+                public void onClick(View v){
+			        final DiscoveredBluetoothDevice device = mDevices.get(getAdapterPosition());
+			        connectButtonClickListener.onConnectButtonClick(device);
+                }
+            });
+
+			identifyButton.setOnClickListener(new View.OnClickListener(){
+			    @Override
+                public void onClick(View v){
+			        final DiscoveredBluetoothDevice device = mDevices.get(getAdapterPosition());
+			        identifyButtonClickListener.onIdentifyButtonClick(device);
+                }
+            });
+
+			provisionButton.setOnClickListener(new View.OnClickListener(){
+			    @Override
+                public  void onClick(View v){
+			        provisionButtonClickListener.onProvisionButtonClickListener();
+                }
+            });
+			/*itemBox.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					final DiscoveredBluetoothDevice device = mDevices.get(getAdapterPosition());
 					mOnItemClickListener.onItemClick(device);
 				}
-			});
+			});*/
         }
 	}
 }

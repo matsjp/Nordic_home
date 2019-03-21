@@ -11,9 +11,11 @@ import android.util.Log;
 import com.example.nordichome.adapter.DevicesAdapter;
 import com.example.nordichome.adapter.DiscoveredBluetoothDevice;
 
+import no.nordicsemi.android.meshprovisioner.UnprovisionedBeacon;
 import viewmodels.ScannerRepo;
 
-public class ScannerActivity extends AppCompatActivity implements DevicesAdapter.OnItemClickListener {
+public class ScannerActivity extends AppCompatActivity implements DevicesAdapter.OnItemClickListener, DevicesAdapter.ConnectButtonClickListener,
+        DevicesAdapter.IdentifyButtonClickListener, DevicesAdapter.ProvisionButtonClickListener {
 
     private ScannerRepo scannerRepo;
     private String TAG = ScannerActivity.class.getSimpleName();
@@ -33,6 +35,9 @@ public class ScannerActivity extends AppCompatActivity implements DevicesAdapter
 
         final DevicesAdapter adapter = new DevicesAdapter(this, scannerRepo.getUnprovisionedDevicesLiveData());
         adapter.setOnItemClickListener(this);
+        adapter.setConnectButtonClickListener(this);
+        adapter.setIdentifyButtonClickListener(this);
+        adapter.setProvisionButtonClickListener(this);
         recyclerView.setAdapter(adapter);
     }
 
@@ -65,5 +70,26 @@ public class ScannerActivity extends AppCompatActivity implements DevicesAdapter
     @Override
     public void onItemClick(@NonNull DiscoveredBluetoothDevice device) {
         scannerRepo.connect(device);
+    }
+
+    @Override
+    public void onConnectButtonClick(@NonNull DiscoveredBluetoothDevice device){
+        Log.d(TAG, "Connect button clicked");
+        if(scannerRepo.getBleMeshManager().isConnected()){
+            scannerRepo.getBleMeshManager().disconnect();
+        }
+        scannerRepo.connect(device);
+    }
+
+    @Override
+    public void onIdentifyButtonClick(@NonNull DiscoveredBluetoothDevice device){
+        Log.d(TAG, "Identify Button Clicked");
+        scannerRepo.identifyNode((UnprovisionedBeacon) device.getBeacon());
+    }
+
+    @Override
+    public void onProvisionButtonClickListener() {
+        Log.d(TAG, "Provision button clicked");
+        scannerRepo.provisionCurrentUnprovisionedMesNode();
     }
 }

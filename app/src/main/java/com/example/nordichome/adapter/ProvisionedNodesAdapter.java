@@ -8,13 +8,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.example.nordichome.MainActivity;
+import com.example.nordichome.ProvisioningActivity;
 import com.example.nordichome.R;
 
 import java.util.ArrayList;
@@ -32,7 +30,7 @@ public class ProvisionedNodesAdapter extends RecyclerView.Adapter<ProvisionedNod
     private OnItemClickListener onItemClickListener;
 
     // data is passed into the constructor
-    public ProvisionedNodesAdapter(MainActivity context, ProvisionedNodesViewmodes view) {
+    public ProvisionedNodesAdapter(ProvisioningActivity context, ProvisionedNodesViewmodes view) {
         this.mInflater = LayoutInflater.from(context);
         this.context = context;
         this.view = view;

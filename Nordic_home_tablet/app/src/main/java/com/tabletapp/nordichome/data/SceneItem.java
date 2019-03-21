@@ -1,4 +1,4 @@
-package com.tabletapp.nordichome.group;
+package com.tabletapp.nordichome.data;
 
 import java.util.UUID;
 

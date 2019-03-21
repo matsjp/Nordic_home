@@ -33,7 +33,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.example.nordichome.MainActivity;
 import com.example.nordichome.R;
@@ -111,10 +113,16 @@ public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.ViewHold
 	final class ViewHolder extends RecyclerView.ViewHolder {
 		final TextView deviceName;
 		final RelativeLayout itemBox;
+		final ToggleButton toggleButton;
+
+
+
 
 		private ViewHolder(@NonNull final View view) {
 			super(view);
 			deviceName = view.findViewById(R.id.device_name);
+			toggleButton = view.findViewById(R.id.toggle_Button);
+			toggleButton.setVisibility(View.GONE);
 			itemBox = view.findViewById(R.id.item_box);
 			itemBox.setOnClickListener(new View.OnClickListener() {
 				@Override
@@ -123,6 +131,6 @@ public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.ViewHold
 					mOnItemClickListener.onItemClick(device);
 				}
 			});
-		}
+        }
 	}
 }

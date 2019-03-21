@@ -13,11 +13,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tabletapp.nordichome.group.GroupContent;
 import com.tabletapp.nordichome.group.GroupItem;
+import com.tabletapp.nordichome.group.Network;
 
 import java.util.List;
 
@@ -37,7 +39,7 @@ public class ItemListActivity extends AppCompatActivity {
      */
     private boolean mTwoPane;
     //TODO: get networkname/address from JSON file.
-    private String networkAddress = "Bakkegata 2";
+    public Network currentNetwork = new Network("Bakkegata 2");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +51,9 @@ public class ItemListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
+
         TextView txtAddress = (TextView) findViewById(R.id.txtAddress);
-        txtAddress.setText(networkAddress);
+        txtAddress.setText(currentNetwork.networkName);
 
         if (findViewById(R.id.item_detail_container) != null) {
             // The detail container view will be present only in the
@@ -63,7 +66,6 @@ public class ItemListActivity extends AppCompatActivity {
         View recyclerView = findViewById(R.id.item_list);
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
-
 
         Boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE)
                 .getBoolean("isFirstRun", true);

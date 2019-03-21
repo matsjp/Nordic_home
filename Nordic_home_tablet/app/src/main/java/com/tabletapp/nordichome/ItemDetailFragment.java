@@ -62,7 +62,8 @@ public class ItemDetailFragment extends Fragment {
 
         // Show the group content as text in a TextView.
         if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.item_detail)).setText(mItem.name);
+            //Setting the text for the detail part. This is where we want the gridview to show.
+            ((TextView) rootView.findViewById(R.id.item_detail)).setText("HEIHEI");
         }
 
         return rootView;

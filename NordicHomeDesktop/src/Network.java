@@ -47,28 +47,4 @@ public class Network {
         return keys;
     }
 
-
-    public static void main(String[] args) {
-        Network n = new Network("Nettnett","75849398475");
-        System.out.println("Nettverk: "+n.getName()+". Adresse: "+n.getAddress());
-        n.addGroup("Bad");
-        n.addGroup("Kjøkken");
-        n.addGroup("Rom");
-        System.out.println("Groups: "+n.getGroups());
-
-        ArrayList<String> scenes = n.groups.get("Bad");
-        ArrayList<String> scenesK = n.groups.get("Kjøkken");
-
-
-        System.out.println("Scener til badet: "+ scenes);
-        System.out.println("Scener til kjøkkenet: "+scenesK);
-
-
-        scenesK.remove(2);
-        System.out.println("Scener til kjøkkenet: "+scenesK);
-        System.out.println("Scener til badet: "+scenes);
-
-
-    }
-
 }

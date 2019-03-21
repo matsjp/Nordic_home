@@ -388,6 +388,45 @@ public class NetworksController {
         }
     }
 
+    public void exportNetwork(){
+        Network network = lwNetworkList.getSelectionModel().getSelectedItem();
+
+        try{
+            JFXDialogLayout content = new JFXDialogLayout();
+            Label txt = new Label("Are you sure you want to export network '"+network.getName()+"'?");
+            Label status = new Label();
+            content.setBody(txt,status);
+
+            JFXDialog dialogDeleteScene = new JFXDialog(stackPane, content, JFXDialog.DialogTransition.CENTER, true);
+            JFXButton yes = new JFXButton("Yes");
+            JFXButton close = new JFXButton("Close");
+
+            //Button action for closing the dialog
+            close.setOnAction(event -> dialogDeleteScene.close());
+
+            //Button action for deleting the network
+            yes.setOnAction(event -> {
+                try {
+                    
+                    //Her er det mye som mangler, her skal funksjon/funksjoner for å generere JSON-fila
+
+                    //txt.setText("");
+                    //status.setText("Network exported succsessfully.");
+                    yes.setDisable(true);
+                } catch (NullPointerException e) {
+                    System.out.println("Exception exporting the network --> " + e);
+                }
+            });
+
+            content.setActions(close, yes);
+            dialogDeleteScene.show();
+
+        }catch (NullPointerException e){
+            System.out.println("Exception exporting the network ---> "+e);
+        }
+
+    }
+
 
     //TODO: Skrive tester
     //TODO: Fikse export

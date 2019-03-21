@@ -17,8 +17,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tabletapp.nordichome.group.GroupContent;
-import com.tabletapp.nordichome.group.GroupItem;
+import com.tabletapp.nordichome.data.GroupContent;
+import com.tabletapp.nordichome.data.GroupItem;
 
 import java.util.List;
 

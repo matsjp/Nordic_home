@@ -47,32 +47,13 @@ public class NetworksController {
     public Object chosenGroup = null;
 
 
-    //Creating a test network to work with
-    Network testNetwork = dummyNewNetwork("testNetwork", "testAddress");
-    Network test2Network = dummyNewNetwork("test2", "adresseadresse");
-    Network test3Network = dummyNewNetwork("Nettverk3", "8765423456789");
-
-
-
     @FXML
     private void initialize() {
         showNetworks();
         showChosenNetwork();
         showChosenNetwork();
 
-        testNetwork.addGroup("Bad");
-        testNetwork.addGroup("Kjøkken");
-        test2Network.addGroup("Stue");
     }
-
-
-    //Trengs ikke senere! Er for dummydata
-    public Network dummyNewNetwork(String name, String address){
-        Network network = new Network(name, address);
-        networks.add(network);
-        return network;
-    }
-
 
     /**
      * newNetwork: Method for adding a new network to the networks list*/

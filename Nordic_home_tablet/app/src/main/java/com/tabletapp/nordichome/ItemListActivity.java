@@ -36,7 +36,6 @@ public class ItemListActivity extends AppCompatActivity {
      * device.
      */
     private boolean mTwoPane;
-    //TODO: get networkname/address from JSON file.
     private String networkAddress = "Bakkegata 2";
 
     @Override
@@ -50,6 +49,7 @@ public class ItemListActivity extends AppCompatActivity {
         toolbar.setTitle(getTitle());
 
         TextView txtAddress = (TextView) findViewById(R.id.txtAddress);
+        //TODO: get networkname/address from JSON file.
         txtAddress.setText(networkAddress);
 
         if (findViewById(R.id.item_detail_container) != null) {

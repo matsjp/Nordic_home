@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Nordic Home</string>
     <string name="title_item_detail">Item Detail</string>
-    <string name="btnSignIn">Sign in</string>
+    <string name="btnGetStarted">Get started</string>
+    <string name="app_logo">Nordic Home App logo</string>
+    <string name="welcome">Welcome to your Nordic Home</string>
 </resources>

@@ -18,6 +18,9 @@ public class NetworksController {
     private JFXButton btnDeleteScene;
 
     @FXML
+    private JFXButton btnDeleteNetwork;
+
+    @FXML
     private JFXListView<Network> lwNetworkList;
 
     @FXML
@@ -121,17 +124,19 @@ public class NetworksController {
 
         add.setOnAction(event -> {
             try{
-                String name = networkName.getText();
-                String address = addressName.getText();
+                if(!networkName.getText().isEmpty() && !addressName.getText().isEmpty() ){
+                    String name = networkName.getText();
+                    String address = addressName.getText();
 
-                //Adding the new network to the list of networks
-                newNetwork(name,address);
+                    //Adding the new network to the list of networks
+                    newNetwork(name,address);
 
-                //Updating the listview
-                lwNetworkList.getItems().clear();
-                lwNetworkList.getItems().addAll(networks);
+                    //Updating the listview
+                    lwNetworkList.getItems().clear();
+                    lwNetworkList.getItems().addAll(networks);
 
-                dialogNewGroup.close();
+                    dialogNewGroup.close();
+                }
             }
             catch (NullPointerException e){
                 System.out.println("Exception when creating a network --> " + e);
@@ -161,6 +166,7 @@ public class NetworksController {
     public void showNetworkInfo(Network network){
         apNetworkInfo.setVisible(true);
         btnDeleteScene.setDisable(true);
+        btnDeleteNetwork.setDisable(false);
         lvGroups.getItems().clear();
 
         System.out.println("Nettverk: "+networks);
@@ -301,22 +307,25 @@ public class NetworksController {
         //Button for adding the new group to the network
         add.setOnAction(event -> {
             try{
-                String newGroup = group.getText();
-                Network network = lwNetworkList.getSelectionModel().getSelectedItem();
+                if (!group.getText().isEmpty()){
+                    String newGroup = group.getText();
+                    Network network = lwNetworkList.getSelectionModel().getSelectedItem();
 
-                //Sjekk
-                System.out.println("Gruppe: "+newGroup);
-                System.out.println("Nettverk: "+ network);
-                System.out.println("Groups:"+network.getGroups());
+                    //Sjekk
+                    System.out.println("Gruppe: "+newGroup);
+                    System.out.println("Nettverk: "+ network);
+                    System.out.println("Groups:"+network.getGroups());
 
-                //Add the new group to the network
-                network.addGroup(newGroup);
+                    //Add the new group to the network
+                    network.addGroup(newGroup);
 
-                //Update the list view
-                updateGroupListView(network);
+                    //Update the list view
+                    updateGroupListView(network);
 
-                group.clear();
-                status.setText("Added successfully!");
+                    group.clear();
+                    status.setText("Added successfully!");
+                }
+
 
             }
             catch (NullPointerException e){
@@ -336,11 +345,53 @@ public class NetworksController {
     }
 
 
+    /**
+     * deleteNetwork: Method for deleting a network
+     * @author Julie
+     * */
+    public void deleteNetwork(){
+        Network network = lwNetworkList.getSelectionModel().getSelectedItem();
+
+        try {
+
+            if (!networks.isEmpty()) {
+                JFXDialogLayout content = new JFXDialogLayout();
+                content.setBody(new Label("Are you sure you want to delet network '"+network.getName()+"'?"));
+
+                JFXDialog dialogDeleteScene = new JFXDialog(stackPane, content, JFXDialog.DialogTransition.CENTER, true);
+                JFXButton yes = new JFXButton("Yes");
+                JFXButton close = new JFXButton("Close");
+
+                //Button action for closing the dialog
+                close.setOnAction(event -> dialogDeleteScene.close());
+
+                //Button action for deleting the network
+                yes.setOnAction(event -> {
+                    try {
+                        networks.remove(network);
+                        lwNetworkList.getItems().clear();
+                        lwNetworkList.getItems().addAll(networks);
+                        dialogDeleteScene.close();
+
+                    } catch (NullPointerException e) {
+                        System.out.println("Exception deleting a network --> " + e);
+                    }
+                });
+
+                content.setActions(close, yes);
+                dialogDeleteScene.show();
+
+            }
+
+        } catch (NullPointerException e){
+            System.out.println("Exception getting scene or group when clicking 'Delete group' ---> "+e);
+        }
+    }
+
+
     //TODO: Skrive tester
     //TODO: Fikse export
     //TODO: Mulighet for å kunne slette et nettverk fra lista
-    //TODO: Fikse slik at det ikke er mulig å adde et nettverk hvis navn eller adressefelt er tomt
-    //TODO: Fikse slik at det ikke er mulig å adde grupper uten noen gruppenavn
 
 
 }

@@ -5,7 +5,6 @@ import java.util.Set;
 public class Network {
     private String name;
     private final String address;
-    //private ArrayList<String> groups = new ArrayList<String>();
 
     private HashMap<String, ArrayList<String>> groups = new HashMap<String, ArrayList<String>>();
 
@@ -29,24 +28,7 @@ public class Network {
     }
 
 
-
-    /*
-    public ArrayList<String> getGroups() {
-        return groups;
-    }
-
-    public void setGroups(ArrayList groups) {
-        this.groups = groups;
-    }
-
-    public void addGroup (String group){
-        this.groups.add(group);
-    }*/
-
-
-
-
-   public void addGroup(String group){
+    public void addGroup(String group){
        //Default scenes
        ArrayList<String> scenes = new ArrayList<>();
        scenes.add("On");
@@ -55,7 +37,6 @@ public class Network {
 
        this.groups.put(group,scenes);
     }
-
 
     public HashMap<String, ArrayList<String>> getFullGroups() {
         return groups;

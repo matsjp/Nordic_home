@@ -391,7 +391,6 @@ public class NetworksController {
 
     //TODO: Skrive tester
     //TODO: Fikse export
-    //TODO: Mulighet for å kunne slette et nettverk fra lista
 
 
 }

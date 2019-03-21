@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="loginScene" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LoginController">
+   <children>
+      <JFXButton fx:id="lblNextPage" layoutX="421.0" layoutY="402.0" onAction="#SendToNetworksPage" text="Next" />
+   </children>
+</AnchorPane>

@@ -59,12 +59,12 @@ public class ItemDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.item_detail, container, false);
+        ((TextView) rootView.findViewById(R.id.item_detail_text)).setText(mItem.name);
 
         // Show the group content as text in a TextView.
-        if (mItem != null) {
+        //if (mItem != null) {
             //Setting the text for the detail part. This is where we want the gridview to show.
-            ((TextView) rootView.findViewById(R.id.item_detail)).setText("HEIHEI");
-        }
+        // }
 
         return rootView;
     }

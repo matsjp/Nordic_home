@@ -31,7 +31,6 @@
 
         <include layout="@layout/item_list" />
 
-
     </FrameLayout>
 
 

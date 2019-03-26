@@ -7,7 +7,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
 import android.widget.TextView;
+
 import com.tabletapp.nordichome.data.GroupContent;
 import com.tabletapp.nordichome.data.GroupItem;
 
@@ -62,6 +64,8 @@ public class ItemDetailFragment extends Fragment {
 
         // Show the group content as text in a TextView.
         if (mItem != null) {
+            //Setting the text for the detail part. This is where we want the gridview to show.
+            //TODO: Finne ut hvordan gridview skal kalles her, og vises her.
             ((TextView) rootView.findViewById(R.id.item_detail)).setText(mItem.name);
         }
 

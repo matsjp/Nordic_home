@@ -471,11 +471,9 @@ public class NetworksController {
             System.out.println("Exception getting scene or group when 'Delete group' ---> "+e);
         }
 
-
     }
 
 
-    //TODO: Skrive tester
     //TODO: Fikse export
 
 

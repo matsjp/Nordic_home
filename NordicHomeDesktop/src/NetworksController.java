@@ -21,9 +21,6 @@ public class NetworksController {
     private JFXButton btnDeleteNetwork;
 
     @FXML
-    private JFXButton btnDeleteGroup;
-
-    @FXML
     private JFXListView<Network> lwNetworkList;
 
     @FXML
@@ -471,7 +468,7 @@ public class NetworksController {
             }
 
         } catch (NullPointerException e){
-            System.out.println("Exception getting scene or group when clicking 'Delete group' ---> "+e);
+            System.out.println("Exception getting scene or group when 'Delete group' ---> "+e);
         }
 
 

@@ -26,21 +26,21 @@
             android:id="@+id/txtMyHome"
             android:layout_width="match_parent"
             android:layout_height="31dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="0dp"
-            android:text="My Home"
-            android:textSize="20dp"
             android:layout_marginLeft="40dp"
-            android:layout_marginRight="20dp" />
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="0dp"
+            android:text="@string/my_home"
+            android:textSize="20dp" />
 
         <TextView
             android:id="@+id/txtAddress"
-            android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:text="address"
-            android:layout_marginBottom="20dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="40dp"
-            android:layout_marginRight="20dp" />
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/address" />
 
         <View
             android:layout_width="fill_parent"

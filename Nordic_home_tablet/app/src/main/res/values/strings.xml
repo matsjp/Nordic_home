@@ -5,5 +5,7 @@
     <string name="app_logo">Nordic Home App logo</string>
     <string name="welcome">Welcome to your Nordic Home</string>
     <string name="action_settings">Update JSON</string>
+    <string name="my_home">My home</string>
+    <string name="address">Address</string>
 
 </resources>

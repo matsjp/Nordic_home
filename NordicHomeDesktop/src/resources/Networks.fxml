@@ -39,7 +39,7 @@
                               <Font name="System Bold" size="13.0" />
                            </font>
                         </Label>
-                        <JFXButton fx:id="btnNewGroup" layoutY="374.0" onAction="#showNewGroupDialog" prefHeight="25.0" prefWidth="87.0" style="-fx-background-color: #D6DBDF#D6DBDF;" text="New Group">
+                        <JFXButton fx:id="btnNewGroup" layoutY="362.0" onAction="#showNewGroupDialog" prefHeight="25.0" prefWidth="87.0" style="-fx-background-color: #D6DBDF#D6DBDF;" text="New Group" translateY="-5.0">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
@@ -47,8 +47,8 @@
                               <Font size="11.0" />
                            </font>
                         </JFXButton>
-                        <JFXListView fx:id="lvGroups" layoutY="101.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="266.0" prefWidth="334.0" />
-                        <Label fx:id="lblGroups" layoutY="77.0" prefHeight="17.0" prefWidth="57.0" text="Groups:" />
+                        <JFXListView fx:id="lvGroups" layoutY="86.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="266.0" prefWidth="334.0" />
+                        <Label fx:id="lblGroups" layoutY="69.0" prefHeight="17.0" prefWidth="57.0" text="Groups:" />
                         <Label layoutY="6.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="17.0" prefWidth="118.0" text="Network name:">
                            <font>
                               <Font name="System Bold" size="13.0" />
@@ -56,9 +56,9 @@
                         </Label>
                         <Label fx:id="lblNetworkName" layoutX="137.0" layoutY="6.0" prefHeight="17.0" prefWidth="189.0" />
                         <Label fx:id="lblNetworkAddress" layoutX="137.0" layoutY="32.0" prefHeight="17.0" prefWidth="189.0" />
-                        <Label fx:id="lblGroups1" layoutX="340.0" layoutY="77.0" prefHeight="17.0" prefWidth="57.0" text="Scenes:" />
-                        <JFXListView fx:id="lvScenes" layoutX="340.0" layoutY="101.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="266.0" prefWidth="328.0" />
-                        <JFXButton fx:id="btnDeleteScene" disable="true" layoutX="340.0" layoutY="374.0" onAction="#deleteScene" prefHeight="25.0" prefWidth="87.0" style="-fx-background-color: #D6DBDF#D6DBDF;" text="Delete Scene">
+                        <Label fx:id="lblGroups1" layoutX="340.0" layoutY="69.0" prefHeight="17.0" prefWidth="57.0" text="Scenes:" />
+                        <JFXListView fx:id="lvScenes" layoutX="340.0" layoutY="86.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="266.0" prefWidth="328.0" />
+                        <JFXButton fx:id="btnDeleteScene" disable="true" layoutX="340.0" layoutY="357.0" onAction="#deleteScene" prefHeight="25.0" prefWidth="87.0" style="-fx-background-color: #D6DBDF#D6DBDF;" text="Delete Scene">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
@@ -72,6 +72,14 @@
                            </cursor>
                            <font>
                               <Font size="12.0" />
+                           </font>
+                        </JFXButton>
+                        <JFXButton fx:id="btnDeleteGroup" layoutY="390.0" onAction="#deleteGroup" prefHeight="25.0" prefWidth="87.0" style="-fx-background-color: #D6DBDF#D6DBDF;" text="Delete Group" translateY="-3.0">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                           <font>
+                              <Font size="11.0" />
                            </font>
                         </JFXButton>
                      </children>

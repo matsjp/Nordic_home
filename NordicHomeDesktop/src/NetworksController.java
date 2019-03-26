@@ -21,6 +21,9 @@ public class NetworksController {
     private JFXButton btnDeleteNetwork;
 
     @FXML
+    private JFXButton btnDeleteGroup;
+
+    @FXML
     private JFXListView<Network> lwNetworkList;
 
     @FXML
@@ -424,6 +427,53 @@ public class NetworksController {
         }catch (NullPointerException e){
             System.out.println("Exception exporting the network ---> "+e);
         }
+
+    }
+
+    public void deleteGroup(){
+        Network network = lwNetworkList.getSelectionModel().getSelectedItem();
+
+        try {
+            //Getting the chosen group to delete
+            String group = (String) lvGroups.getSelectionModel().getSelectedItem();
+
+
+            if (!group.isEmpty()) {
+                JFXDialogLayout content = new JFXDialogLayout();
+                content.setBody(new Label("Are you sure you want to delet group '"+ group + "'?"));
+
+                JFXDialog dialogDeleteGroup = new JFXDialog(stackPane, content, JFXDialog.DialogTransition.CENTER, true);
+                JFXButton yes = new JFXButton("Yes");
+                JFXButton close = new JFXButton("Close");
+
+                //Button action for closing the dialog
+                close.setOnAction(event -> dialogDeleteGroup.close());
+
+                //Button action for deleting the group
+                yes.setOnAction(event -> {
+                    try {
+                        Set<String> groups = network.getGroups();
+                        groups.remove(group);
+                        lvGroups.getItems().clear();
+                        lvGroups.getItems().addAll(groups);
+                        dialogDeleteGroup.close();
+
+                        System.out.println("Deleted gruppe: " + group);
+                        System.out.println("Grupper nå: " + network.getGroups());
+                    } catch (NullPointerException e) {
+                        System.out.println("Exception deleting a scene from a group --> " + e);
+                    }
+                });
+
+                content.setActions(close, yes);
+                dialogDeleteGroup.show();
+
+            }
+
+        } catch (NullPointerException e){
+            System.out.println("Exception getting scene or group when clicking 'Delete group' ---> "+e);
+        }
+
 
     }
 

@@ -31,7 +31,9 @@
             android:layout_marginRight="20dp"
             android:layout_marginBottom="0dp"
             android:text="@string/my_home"
-            android:textSize="20dp" />
+            android:textSize="20sp"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="20dp" />
 
         <TextView
             android:id="@+id/txtAddress"
@@ -40,7 +42,9 @@
             android:layout_marginLeft="40dp"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="20dp"
-            android:text="@string/address" />
+            android:text="@string/address"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="20dp" />
 
         <View
             android:layout_width="fill_parent"

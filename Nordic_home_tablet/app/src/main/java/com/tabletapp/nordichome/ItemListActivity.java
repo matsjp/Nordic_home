@@ -51,8 +51,8 @@ public class ItemListActivity extends AppCompatActivity {
         toolbar.setTitle(getTitle());
 
 
-        TextView txtAddress = (TextView) findViewById(R.id.txtAddress);
-        txtAddress.setText(currentNetwork.networkName);
+        //TextView txtAddress = (TextView) findViewById(R.id.txtAddress);
+        //txtAddress.setText(currentNetwork.networkName);
 
         if (findViewById(R.id.item_detail_container) != null) {
             // The detail container view will be present only in the
@@ -97,7 +97,10 @@ public class ItemListActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_settings:
                 //TODO: user wants to update the JSON fil - Redirect to google login
-                return true;
+
+                Intent intent = new Intent(ItemListActivity.this, NetworkActivity.class);
+                startActivity(intent);
+
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.

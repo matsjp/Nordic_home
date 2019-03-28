@@ -1,1 +1,3 @@
 include ':app'
+include ':meshprovisioner'
+project(':meshprovisioner').projectDir = file('../meshprovisioner')

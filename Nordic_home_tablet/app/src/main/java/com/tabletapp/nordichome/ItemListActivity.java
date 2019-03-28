@@ -13,12 +13,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tabletapp.nordichome.data.GroupContent;
 import com.tabletapp.nordichome.data.GroupItem;
 import com.tabletapp.nordichome.data.SceneItem;
+
+import com.tabletapp.nordichome.group.Network;
 
 import java.util.List;
 
@@ -38,8 +41,9 @@ public class ItemListActivity extends AppCompatActivity {
      * device.
      */
     private boolean mTwoPane;
-    private String networkAddress = "Bakkegata 2";
-    private SceneItem[] sceneItems;
+
+    //TODO: get networkname/address from JSON file.
+    public Network currentNetwork = new Network("Bakkegata 2");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,10 +56,8 @@ public class ItemListActivity extends AppCompatActivity {
         toolbar.setTitle(getTitle());
 
 
-
         TextView txtAddress = (TextView) findViewById(R.id.txtAddress);
-        //TODO: get networkname/address from JSON file.
-        txtAddress.setText(networkAddress);
+        txtAddress.setText(currentNetwork.networkName);
 
         if (findViewById(R.id.item_detail_container) != null) {
             // The detail container view will be present only in the

@@ -71,9 +71,13 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="3">
+<<<<<<< HEAD
         <include layout="@layout/grid_details"/>
     </FrameLayout>
 
 </LinearLayout>
 
+=======
+    </FrameLayout>
+>>>>>>> 120aacf75877330b692672ab0ec2add46f4c993b
 

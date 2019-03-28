@@ -1,8 +1,10 @@
 package com.example.nordichome.adapter;
 
+import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.example.nordichome.ApplicationExtension;
 import com.example.nordichome.ProvisioningActivity;
 import com.example.nordichome.R;
 
@@ -26,11 +29,11 @@ public class ProvisionedNodesAdapter extends RecyclerView.Adapter<ProvisionedNod
     private ArrayList<ProvisionedMeshNode> nodesList = new ArrayList<ProvisionedMeshNode>();
     private Context context;
     private ProvisionedNodesViewmodes view;
-    public static String TAG = ProvisionedMeshNode.class.getSimpleName();
+    public static String TAG = ProvisionedNodesAdapter.class.getSimpleName();
     private OnItemClickListener onItemClickListener;
 
     // data is passed into the constructor
-    public ProvisionedNodesAdapter(ProvisioningActivity context, ProvisionedNodesViewmodes view) {
+    public ProvisionedNodesAdapter(AppCompatActivity context, ProvisionedNodesViewmodes view) {
         this.mInflater = LayoutInflater.from(context);
         this.context = context;
         this.view = view;

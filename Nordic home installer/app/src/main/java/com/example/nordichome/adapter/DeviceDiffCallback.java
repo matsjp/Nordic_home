@@ -24,12 +24,14 @@ package com.example.nordichome.adapter;
 
 
 import android.support.v7.util.DiffUtil;
+import android.util.Log;
 
 import java.util.List;
 
 public class DeviceDiffCallback extends DiffUtil.Callback {
 	private final List<DiscoveredBluetoothDevice> oldList;
 	private final List<DiscoveredBluetoothDevice> newList;
+	public final static String TAG = DeviceDiffCallback.class.getSimpleName();
 
 	DeviceDiffCallback(final List<DiscoveredBluetoothDevice> oldList,
 					   final List<DiscoveredBluetoothDevice> newList) {

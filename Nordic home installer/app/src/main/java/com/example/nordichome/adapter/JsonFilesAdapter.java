@@ -3,6 +3,8 @@ package com.example.nordichome.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,15 +14,20 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.nordichome.ApplicationExtension;
+import com.example.nordichome.GroupsActivity;
 import com.example.nordichome.R;
 import com.google.api.services.drive.model.File;
 
 import java.util.ArrayList;
+import android.arch.lifecycle.Observer;
+
+import viewmodels.JsonFilesViewModel;
 
 public class JsonFilesAdapter extends RecyclerView.Adapter<JsonFilesAdapter.MyViewHolder> {
     private ArrayList<File> mDataset = new ArrayList<>();
     public static String TAG = JsonFilesAdapter.class.getSimpleName();
     private Context context;
+    private JsonFilesViewModel jsonFilesViewModel;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -40,9 +47,6 @@ public class JsonFilesAdapter extends RecyclerView.Adapter<JsonFilesAdapter.MyVi
                 @Override
                 public void onClick(View v) {
                     Log.d(JsonFilesAdapter.TAG, mDataset.get(getAdapterPosition()).getId());
-                    /*Intent intent = new Intent(context, FileReader.class);
-                    intent.putExtra("fileId", mDataset.get(getAdapterPosition()).getId());
-                    context.startActivity(intent);*/
                     ApplicationExtension application = (ApplicationExtension) context.getApplicationContext();
                     application.getDriveServiceRepo().downloadFile(mDataset.get(getAdapterPosition()).getId()).addOnSuccessListener(name -> {
                         java.io.File file = new java.io.File(context.getFilesDir(), name);
@@ -56,8 +60,22 @@ public class JsonFilesAdapter extends RecyclerView.Adapter<JsonFilesAdapter.MyVi
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public JsonFilesAdapter(Context context) {
+    public JsonFilesAdapter(AppCompatActivity context, JsonFilesViewModel jsonFilesViewModel) {
         this.context = context;
+        this.jsonFilesViewModel = jsonFilesViewModel;
+
+        jsonFilesViewModel.getImportSuccessSignal().observe(context, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean signal) {
+                Log.d(TAG, "getImportSuccessSignal");
+                if (signal){
+                    ApplicationExtension application = (ApplicationExtension) context.getApplication();
+                    application.getScannerRepo().getImportSuccessSignal().postValue(false);
+                    Intent intent = new Intent(context, GroupsActivity.class);
+                    context.startActivity(intent);
+                }
+            }
+        });
     }
 
     public void addData(File data){
@@ -80,7 +98,7 @@ public class JsonFilesAdapter extends RecyclerView.Adapter<JsonFilesAdapter.MyVi
     public void onBindViewHolder(MyViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.textView.setText(mDataset.get(position).getName());
+        holder.textView.setText(mDataset.get(position).getName().substring(0, mDataset.get(position).getName().length() - 5));
     }
 
     // Return the size of your dataset (invoked by the layout manager)

@@ -7,7 +7,7 @@
     tools:context=".ProvisioningActivity">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view_devices"
+        android:id="@+id/recycler_view_groups"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -15,7 +15,7 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/add_device"
+        android:id="@+id/add_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -24,13 +24,13 @@
         android:layout_margin="16dp"/>
 
     <TextView
-        android:id="@+id/no_provisioned_nodes"
+        android:id="@+id/no_groups_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="There are no provisioned nodes"
+        android:text="There are no groups"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recycler_view_devices" />
+        app:layout_constraintTop_toBottomOf="@+id/recycler_view_groups" />
 
 </android.support.constraint.ConstraintLayout>

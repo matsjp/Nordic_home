@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import no.nordicsemi.android.meshprovisioner.Group;
 import no.nordicsemi.android.meshprovisioner.MeshManagerApi;
 import no.nordicsemi.android.meshprovisioner.MeshManagerCallbacks;
 import no.nordicsemi.android.meshprovisioner.MeshNetwork;
@@ -37,11 +38,15 @@ import no.nordicsemi.android.meshprovisioner.transport.ConfigCompositionDataGet;
 import no.nordicsemi.android.meshprovisioner.transport.ConfigCompositionDataStatus;
 import no.nordicsemi.android.meshprovisioner.transport.ConfigModelAppBind;
 import no.nordicsemi.android.meshprovisioner.transport.ConfigModelAppStatus;
+import no.nordicsemi.android.meshprovisioner.transport.ConfigModelSubscriptionAdd;
+import no.nordicsemi.android.meshprovisioner.transport.ConfigModelSubscriptionStatus;
 import no.nordicsemi.android.meshprovisioner.transport.Element;
 import no.nordicsemi.android.meshprovisioner.transport.GenericOnOffStatus;
 import no.nordicsemi.android.meshprovisioner.transport.MeshMessage;
 import no.nordicsemi.android.meshprovisioner.transport.MeshModel;
 import no.nordicsemi.android.meshprovisioner.transport.ProvisionedMeshNode;
+import no.nordicsemi.android.meshprovisioner.transport.SceneRegisterStatus;
+import no.nordicsemi.android.meshprovisioner.transport.SceneStore;
 import no.nordicsemi.android.support.v18.scanner.BluetoothLeScannerCompat;
 import no.nordicsemi.android.support.v18.scanner.ScanCallback;
 import no.nordicsemi.android.support.v18.scanner.ScanFilter;
@@ -70,12 +75,38 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
     private MeshNetwork meshNetwork;
     private Map<MeshModel, Integer> meshModels = new HashMap<>();
 
+    private Boolean scenePreset = false;
+    private Group scenePresetGroup;
+    private int sceneNum;
+
+    private Group selectedGroup = null;
+
     private UnprovisionedMeshNode currentUnprovisionedMeshNode;
 
     private MutableLiveData<Boolean> identifyReady = new MutableLiveData<>();
+    private MutableLiveData<Boolean> provisioningReady = new MutableLiveData<>();
     private MutableLiveData<BluetoothDevice> connectedDevice = new MutableLiveData<>();
     private MutableLiveData<Boolean> isConnecting = new MutableLiveData<>();
     private MutableLiveData<Boolean> isDisconnecting = new MutableLiveData<>();
+    private MutableLiveData<Boolean> provisioningComplete = new MutableLiveData<>();
+
+    private MutableLiveData<Boolean> importSuccessSignal = new MutableLiveData<>();
+    private MutableLiveData<Boolean> importFailSignal = new MutableLiveData<>();
+
+    public MutableLiveData<Boolean> getIdentifyReady(){ return identifyReady; }
+
+    public MutableLiveData<Boolean> getProvisioningReady(){ return provisioningReady; }
+
+    public MutableLiveData<Boolean> getImportSuccessSignal(){
+        return importSuccessSignal;
+    }
+
+    public MutableLiveData<Boolean> getImportFailSignal(){
+        return  importFailSignal;
+    }
+
+    public MutableLiveData<Boolean> getProvisioningComplete(){ return provisioningComplete; }
+
 
     public ScannerRepo(Context context){
         mBleMeshManager = new BleMeshManager(context);
@@ -87,6 +118,10 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
         mMeshManagerApi.loadMeshNetwork();
         handler = new Handler(context.getMainLooper());
         this.context = context;
+    }
+
+    public void setSelectedGroup(Group group){
+        this.selectedGroup = group;
     }
 
     public DevicesLiveData getUnprovisionedDevicesLiveData() {
@@ -124,8 +159,9 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
     }
 
     public void provisionCurrentUnprovisionedMesNode(){
-        if (currentUnprovisionedMeshNode != null) {
+        if (currentUnprovisionedMeshNode != null && provisioningReady.getValue()) {
             mMeshManagerApi.startProvisioning(currentUnprovisionedMeshNode);
+            provisioningReady.postValue(false);
         }
     }
 
@@ -342,12 +378,14 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
         }
         loadNetwork(meshNetwork);
         Log.d(TAG, meshNetwork.getMeshUUID());
+        importSuccessSignal.postValue(true);
         //Pay attention to global meshNetwork variable
     }
 
     @Override
     public void onNetworkImportFailed(String error) {
         Log.d(TAG, "onNetworkImportFailed");
+        importFailSignal.postValue(true);
     }
 
     @Override
@@ -390,6 +428,7 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
         currentUnprovisionedMeshNode = meshNode;
         if (state == PROVISIONING_CAPABILITIES){
             Log.d(TAG, "Starting provisioning");
+            provisioningReady.postValue(true);
             //mMeshManagerApi.startProvisioning(meshNode);
         }
     }
@@ -471,7 +510,12 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
             Log.d(TAG, "ConfigCompositionDataStatus");
             configCompositionDataStatus = (ConfigCompositionDataStatus) meshMessage;
             ConfigAppKeyAdd configAppKeyAdd = new ConfigAppKeyAdd(mMeshManagerApi.getMeshNetwork().getNetKeys().get(0), mMeshManagerApi.getMeshNetwork().getAppKey(0));
-            mMeshManagerApi.sendMeshMessage(src, configAppKeyAdd);
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mMeshManagerApi.sendMeshMessage(src, configAppKeyAdd);
+                }
+            }, 200);
         }
         else if (meshMessage instanceof ConfigAppKeyStatus){
             Log.d(TAG, "ConfigAppKeyStatus");
@@ -490,7 +534,12 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
                     Integer elementAddress = meshModels.remove(meshModel);
                     if (elementAddress != null) {
                         ConfigModelAppBind configModelAppBind = new ConfigModelAppBind(elementAddress, meshModel.getModelId(), 0);
-                        mMeshManagerApi.sendMeshMessage(src, configModelAppBind);
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mMeshManagerApi.sendMeshMessage(src, configModelAppBind);
+                            }
+                        }, 200);
                     }
                 }
             }
@@ -508,11 +557,63 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
                     mMeshManagerApi.sendMeshMessage(src, configModelAppBind);
                 }
             }
+            else{
+                Log.d(TAG, "Done inding keys, adding groups");
+                ArrayList<Element> elements = new ArrayList<>(configCompositionDataStatus.getElements().values());
+                for (Element element : elements){
+                    ArrayList<MeshModel> meshModelList = new ArrayList<>(element.getMeshModels().values());
+                    for (MeshModel meshModel : meshModelList){
+                        Log.d(TAG, "Model:" + meshModel.getModelName());
+                        meshModels.put(meshModel, element.getElementAddress());
+                    }
+                }
+                if (!meshModels.isEmpty()){
+                    MeshModel meshModel = new ArrayList<>(meshModels.keySet()).get(0);
+                    Integer elementAddress = meshModels.remove(meshModel);
+                    if (elementAddress != null) {
+                        ConfigModelSubscriptionAdd configModelSubscriptionAdd = new ConfigModelSubscriptionAdd(elementAddress, selectedGroup.getGroupAddress(), meshModel.getModelId());
+                        mMeshManagerApi.sendMeshMessage(src, configModelSubscriptionAdd);
+                    }
+                }
+            }
         }
         else if (meshMessage instanceof GenericOnOffStatus){
             Log.d(TAG, "GenericOnOffStatus");
             GenericOnOffStatus genericOnOffStatus = (GenericOnOffStatus) meshMessage;
             Log.d(TAG, "Current light state: " + Boolean.toString(genericOnOffStatus.getPresentState()));
+            if (scenePreset){
+                Log.d(TAG, "Sending scene message");
+                scenePreset = false;
+                byte[] appKey = getMeshManagerApi().getMeshNetwork().getAppKey(0).getKey();
+                SceneStore sceneStore = new SceneStore(appKey, sceneNum);
+                getMeshManagerApi().sendMeshMessage(scenePresetGroup.getGroupAddress(), sceneStore);
+            }
+        }
+        else if (meshMessage instanceof ConfigModelSubscriptionStatus){
+            Log.d(TAG, "ConfigModelSubscriptionStatus");
+            if (((ConfigModelSubscriptionStatus) meshMessage).isSuccessful()){
+                Log.d(TAG, "ConfigModelSubscriptionStatus: Success");
+            }
+            else {
+                Log.d(TAG, "ConfigModelSubscriptionStatus: Fail");
+            }
+            if (!meshModels.isEmpty()){
+                MeshModel meshModel = new ArrayList<>(meshModels.keySet()).get(0);
+                Integer elementAddress = meshModels.remove(meshModel);
+                if (elementAddress != null) {
+                    ConfigModelSubscriptionAdd configModelSubscriptionAdd = new ConfigModelSubscriptionAdd(elementAddress, selectedGroup.getGroupAddress(), meshModel.getModelId());
+                    mMeshManagerApi.sendMeshMessage(src, configModelSubscriptionAdd);
+                }
+            }
+            else{
+                Log.d(TAG, "Done provisioning");
+                provisioningComplete.postValue(true);
+                provisioningReady.postValue(false);
+                identifyReady.postValue(false);
+            }
+        }
+        else if (meshMessage instanceof SceneRegisterStatus){
+            Log.d(TAG, "SceneRegisterStatus");
         }
     }
 
@@ -534,5 +635,13 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
 
     public BleMeshManager getBleMeshManager(){
         return mBleMeshManager;
+    }
+
+    public void presetScene(Group group, MeshMessage meshMessage, int sceneNum){
+        scenePreset = true;
+        scenePresetGroup = group;
+        this.sceneNum = sceneNum;
+
+        mMeshManagerApi.sendMeshMessage(group.getGroupAddress(), meshMessage);
     }
 }

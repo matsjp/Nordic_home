@@ -1,15 +1,15 @@
 package com.example.nordichome;
 
 import android.app.Activity;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -30,21 +30,23 @@ import com.google.api.services.drive.model.File;
 import java.util.Collections;
 
 import viewmodels.DriveServiceRepo;
+import viewmodels.JsonFilesViewModel;
+import viewmodels.ProvisionedNodesViewmodes;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainActivity2";
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     private static final int REQUEST_CODE_SIGN_IN = 1;
 
-    private DriveServiceRepo mDriveServiceHelper;
+    private DriveServiceRepo driveRepo;
 
-    private EditText mFileTitleEditText;
-    private EditText mDocContentEditText;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
-    Button button;
+    Button provisionButton;
+    Button groupButton;
+    private Snackbar importFailedSnackbar;
 
 
     @Override
@@ -52,11 +54,23 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         recyclerView = (RecyclerView) findViewById(R.id.json_files_recycler_view);
-        button = findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
+        provisionButton = findViewById(R.id.provision_nav_button);
+        groupButton = findViewById(R.id.group_nav_button);
+
+        importFailedSnackbar = Snackbar.make(findViewById(R.id.layout), R.string.import_failed, Snackbar.LENGTH_SHORT);
+
+        provisionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, ProvisioningActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        groupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, GroupsActivity.class);
                 startActivity(intent);
             }
         });
@@ -69,9 +83,25 @@ public class MainActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
+        final JsonFilesViewModel view = ViewModelProviders.of(this).get(JsonFilesViewModel.class);
+        view.setApplication((ApplicationExtension) getApplication());
+
         // specify an adapter (see also next example)
-        mAdapter = new JsonFilesAdapter(this);
+        mAdapter = new JsonFilesAdapter(this, view);
         recyclerView.setAdapter(mAdapter);
+
+        view.getImportFailSignal().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean signal) {
+                Log.d(TAG, "getImportFailSignal");
+                if (signal){
+                    Log.d(TAG, "import failed");
+                    importFailedSnackbar.show();;
+                    ApplicationExtension application = (ApplicationExtension) getApplication();
+                    application.getScannerRepo().getImportFailSignal().postValue(false);
+                }
+            }
+        });
 
         // Authenticate the user. For most apps, this should be done when the user performs an
         // action that requires Drive access rather than in onCreate.
@@ -132,14 +162,14 @@ public class MainActivity extends AppCompatActivity {
                                     AndroidHttp.newCompatibleTransport(),
                                     new GsonFactory(),
                                     credential)
-                                    .setApplicationName("Drive API Migration")
+                                    .setApplicationName("Nordic Home")
                                     .build();
 
                     // The DriveServiceHelper encapsulates all REST API and SAF functionality.
                     // Its instantiation is required before handling any onClick actions.
-                    mDriveServiceHelper = new DriveServiceRepo(googleDriveService, this);
+                    driveRepo = new DriveServiceRepo(googleDriveService, this);
                     ApplicationExtension application = (ApplicationExtension) getApplication();
-                    application.setDriveServiceRepo(mDriveServiceHelper);
+                    application.setDriveServiceRepo(driveRepo);
                     query();
                 })
                 .addOnFailureListener(exception -> Log.e(TAG, "Unable to sign in.", exception));
@@ -149,10 +179,10 @@ public class MainActivity extends AppCompatActivity {
      * Queries the Drive REST API for files visible to this app and lists them in the content view.
      */
     private void query() {
-        if (mDriveServiceHelper != null) {
+        if (driveRepo != null) {
             Log.d(TAG, "Querying for files.");
 
-            mDriveServiceHelper.queryJsonFiles()
+            driveRepo.queryJsonFiles()
                     .addOnSuccessListener(fileList -> {
                         for (File file : fileList.getFiles()) {
                             ((JsonFilesAdapter) mAdapter).addData(file);

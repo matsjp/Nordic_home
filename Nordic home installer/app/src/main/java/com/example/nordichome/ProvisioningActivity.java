@@ -14,6 +14,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.TextView;
 
 
 import com.example.nordichome.adapter.ProvisionedNodesAdapter;
@@ -55,8 +57,6 @@ public class ProvisioningActivity extends AppCompatActivity implements Provision
     public ProvisionedNodesViewmodes view;
     private ScannerRepo scannerRepo;
     private boolean lightState = true;
-    private DriveServiceRepo driveServiceRepo;
-    private static final int REQUEST_CODE_SIGN_IN = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +65,9 @@ public class ProvisioningActivity extends AppCompatActivity implements Provision
         setContentView(R.layout.activity_provisioning);
         ApplicationExtension application = (ApplicationExtension) getApplication();
         scannerRepo = application.getScannerRepo();
+
+        TextView noProvisionedNodesText = findViewById(R.id.no_provisioned_nodes);
+        noProvisionedNodesText.setVisibility(View.VISIBLE);
 
         final FloatingActionButton addDevice = findViewById(R.id.add_device);
 
@@ -78,6 +81,10 @@ public class ProvisioningActivity extends AppCompatActivity implements Provision
         adapter.setOnItemClickListener(this);
         recyclerView.setAdapter(adapter);
 
+        if (adapter.getItemCount() > 0){
+            noProvisionedNodesText.setVisibility(View.GONE);
+        }
+
         this.enableBluetooth();
         this.checkForLocation();
 
@@ -85,114 +92,6 @@ public class ProvisioningActivity extends AppCompatActivity implements Provision
             final Intent intent = new Intent(ProvisioningActivity.this, ScannerActivity.class);
             startActivity(intent);
         });
-        //requestSignIn();
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
-        Log.d(TAG, Integer.toString(requestCode));
-        switch (requestCode) {
-            case REQUEST_CODE_SIGN_IN:
-                if (resultCode == Activity.RESULT_OK && resultData != null) {
-                    handleSignInResult(resultData);
-                }
-                break;
-        }
-
-        super.onActivityResult(requestCode, resultCode, resultData);
-    }
-
-    private void handleSignInResult(Intent result) {
-        GoogleSignIn.getSignedInAccountFromIntent(result)
-                .addOnSuccessListener(googleAccount -> {
-                    Log.d(TAG, "Signed in as " + googleAccount.getEmail());
-
-                    // Use the authenticated account to sign in to the Drive service.
-                    GoogleAccountCredential credential =
-                            GoogleAccountCredential.usingOAuth2(
-                                    this, Collections.singleton(DriveScopes.DRIVE));
-                    credential.setSelectedAccount(googleAccount.getAccount());
-                    Drive googleDriveService =
-                            new Drive.Builder(
-                                    AndroidHttp.newCompatibleTransport(),
-                                    new GsonFactory(),
-                                    credential)
-                                    .setApplicationName("Drive API Migration")
-                                    .build();
-
-                    // The DriveServiceHelper encapsulates all REST API and SAF functionality.
-                    // Its instantiation is required before handling any onClick actions.
-                    driveServiceRepo = new DriveServiceRepo(googleDriveService, this);
-                    String fileId = "1LJlmmHQG8N2dmvwryvWbrdcB_0NkSQxr";
-                    String name = "data.json";
-                    FileInputStream fileInputStream = null;
-                    Log.d(TAG, "Lets go!");
-                    String data = "";
-                    try {
-                        fileInputStream = this.openFileInput(scannerRepo.getMeshManagerApi().getMeshNetwork().getMeshUUID() + ".json");
-                    }
-                    catch (FileNotFoundException e){
-                        Log.d(TAG, "FileNotFound");
-                    }
-                    InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
-                    BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                    try (InputStreamReader instream = new InputStreamReader(fileInputStream);
-                         BufferedReader buffer = new BufferedReader(instream)) {
-                        String line;
-                        while ((line = buffer.readLine()) != null) {
-                            data = data + line;
-                        }
-                        Log.d(TAG, data);
-                        driveServiceRepo.saveFile(fileId, name, data).addOnFailureListener(exception ->
-                                Log.e(TAG, "Unable to save file via REST.", exception));;
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                })
-                .addOnFailureListener(exception -> Log.e(TAG, "Unable to sign in.", exception));
-    }
-    /*private void handleSignInResult(Intent result) {
-        GoogleSignIn.getSignedInAccountFromIntent(result)
-                .addOnSuccessListener(googleAccount -> {
-                    Log.d(TAG, "Signed in as " + googleAccount.getEmail());
-
-                    // Use the authenticated account to sign in to the Drive service.
-                    GoogleAccountCredential credential =
-                            GoogleAccountCredential.usingOAuth2(
-                                    this, Collections.singleton(DriveScopes.DRIVE));
-                    credential.setSelectedAccount(googleAccount.getAccount());
-                    Drive googleDriveService =
-                            new Drive.Builder(
-                                    AndroidHttp.newCompatibleTransport(),
-                                    new GsonFactory(),
-                                    credential)
-                                    .setApplicationName("Drive API Migration")
-                                    .build();
-
-                    // The DriveServiceHelper encapsulates all REST API and SAF functionality.
-                    // Its instantiation is required before handling any onClick actions.
-                    driveServiceRepo = new DriveServiceRepo(googleDriveService);
-                    ApplicationExtension application = (ApplicationExtension) getApplication();
-                })
-                .addOnFailureListener(exception -> Log.e(TAG, "Unable to sign in.", exception));
-    }*/
-
-    private void requestSignIn() {
-        Log.d(TAG, "Requesting sign-in");
-
-        GoogleSignInOptions signInOptions =
-                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestEmail()
-                        .requestScopes(new Scope(DriveScopes.DRIVE))
-                        .build();
-        GoogleSignInClient client = GoogleSignIn.getClient(this, signInOptions);
-
-        //GoogleSignInAccount account = null; GoogleSignIn.getLastSignedInAccount(this);
-
-        // The result of the sign-in Intent is handled in onActivityResult.
-        //if (account == null) {
-        startActivityForResult(client.getSignInIntent(), REQUEST_CODE_SIGN_IN);
-        //}
     }
 
     //Location access

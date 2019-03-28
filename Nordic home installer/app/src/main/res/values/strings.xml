@@ -6,4 +6,8 @@
     <string name="off">Off</string>
     <string name="connect">Connect</string>
     <string name="connected">Connected</string>
+    <string name="import_failed">The import failed</string>
+    <string name="identify_ready">Connected. Ready to identify</string>
+    <string name="provisioning_ready">Identified. Ready to provision</string>
+    <string name="provisioning_complete">Provisioning complete</string>
 </resources>

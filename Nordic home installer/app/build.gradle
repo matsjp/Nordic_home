@@ -9,6 +9,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -57,4 +58,5 @@ dependencies {
         exclude group: 'org.apache.httpcomponents'
     }
     implementation 'com.google.http-client:google-http-client-gson:1.26.0'
+    implementation 'com.android.support:multidex:1.0.3'
 }

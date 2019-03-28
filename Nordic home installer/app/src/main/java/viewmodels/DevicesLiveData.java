@@ -24,6 +24,7 @@ package viewmodels;
 
 import android.arch.lifecycle.LiveData;
 import android.os.ParcelUuid;
+import android.util.Log;
 
 import com.example.nordichome.BleMeshManager;
 import com.example.nordichome.adapter.DiscoveredBluetoothDevice;
@@ -43,6 +44,7 @@ import no.nordicsemi.android.support.v18.scanner.ScanResult;
 @SuppressWarnings("unused")
 public class DevicesLiveData extends LiveData<List<DiscoveredBluetoothDevice>> {
 	private static final ParcelUuid FILTER_UUID = new ParcelUuid(BleMeshManager.MESH_PROVISIONING_UUID);
+	private static final String TAG = DevicesLiveData.class.getSimpleName();
 
 	private static final int FILTER_RSSI = -50; // [dBm]
 
@@ -116,6 +118,7 @@ public class DevicesLiveData extends LiveData<List<DiscoveredBluetoothDevice>> {
         postValue(mFilteredDevices);
         return !mFilteredDevices.isEmpty();
 	}
+
 
 	/**
 	 * Finds the index of existing devices on the device list.

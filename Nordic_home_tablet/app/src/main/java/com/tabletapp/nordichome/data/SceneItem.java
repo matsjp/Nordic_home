@@ -1,4 +1,4 @@
-package com.tabletapp.nordichome.group;
+package com.tabletapp.nordichome.data;
 
 import java.util.UUID;
 
@@ -15,5 +15,9 @@ public class SceneItem {
     public SceneItem(String name) {
         this.name = name;
         this.id = UUID.randomUUID().toString();
+    }
+
+    public String getName(){
+        return name;
     }
 }

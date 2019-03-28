@@ -7,9 +7,17 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
-import com.tabletapp.nordichome.group.GroupContent;
-import com.tabletapp.nordichome.group.GroupItem;
+
+import com.tabletapp.nordichome.data.GroupContent;
+import com.tabletapp.nordichome.data.GroupItem;
+import com.tabletapp.nordichome.data.SceneItem;
+
+import java.util.ArrayList;
 
 /**
  * A fragment representing a single Item detail screen.
@@ -29,6 +37,7 @@ public class ItemDetailFragment extends Fragment {
      * The dummy content this fragment is presenting.
      */
     private GroupItem mItem;
+    private ArrayList<SceneItem> groupScenes;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -46,25 +55,41 @@ public class ItemDetailFragment extends Fragment {
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
             mItem = GroupContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_NAME));
-
-            Activity activity = this.getActivity();
-            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
-            if (appBarLayout != null) {
-                appBarLayout.setTitle(mItem.name);
-            }
         }
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.item_detail, container, false);
-        ((TextView) rootView.findViewById(R.id.item_detail_text)).setText(mItem.name);
 
-        // Show the group content as text in a TextView.
-        //if (mItem != null) {
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.item_detail, container, false);
+        RadioGroup groupOfScenes = rootView.findViewById(R.id.btnScenes);
+        //groupOfScenes.setVisibility(View.GONE);
+
+        /*TODO: Her maa vi paa en eller annen måte klare å ta bort knapper som gjelder scenes som ikke er i JSON filen
+          btn.setVisiblity(View.GONE)
+          btn.setVisiblity(Viev.VISIBLE)
+        */
+
+        if (mItem != null) {
             //Setting the text for the detail part. This is where we want the gridview to show.
-        // }
+            ((TextView) rootView.findViewById(R.id.item_detail_text)).setText(mItem.name);
+
+            // test adding a radio button programmatically
+            RadioButton newRadioButton = new RadioButton(this.getContext());
+            newRadioButton.setText(mItem.getScenesList().get(0).getName());
+            newRadioButton.setId(R.id.btnOn);
+            LinearLayout.LayoutParams layoutParams = new RadioGroup.LayoutParams(
+                    RadioGroup.LayoutParams.WRAP_CONTENT,
+                    RadioGroup.LayoutParams.WRAP_CONTENT);
+            groupOfScenes.addView(newRadioButton, 0, layoutParams);
+
+            RadioButton newRadioButton2 = new RadioButton(this.getContext());
+            newRadioButton.setText(mItem.getScenesList().get(1).getName());
+            newRadioButton.setId(R.id.btnOff);
+            groupOfScenes.addView(newRadioButton2, 1, layoutParams);
+
+        }
+
 
         return rootView;
     }

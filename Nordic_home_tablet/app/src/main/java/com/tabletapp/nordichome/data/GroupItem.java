@@ -1,6 +1,7 @@
-package com.tabletapp.nordichome.group;
+package com.tabletapp.nordichome.data;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,16 +17,24 @@ public class GroupItem {
     /**
      * An array containing the scenes that belong to the group
      */
-    public static List<SceneItem> scenes = new ArrayList<SceneItem>();
+    public static List<SceneItem> scenes = new ArrayList<>();
 
-    public GroupItem(String name) {
+    public GroupItem(String name, SceneItem... sceneItems) {
         this.id = UUID.randomUUID().toString();
         this.name = name;
+
+        for (SceneItem sceneItem: sceneItems){
+            this.addScene(sceneItem);
+        }
     }
 
     @Override
     public String toString() {
         return this.name;
+    }
+
+    public ArrayList<SceneItem> getScenesList(){
+        return (ArrayList<SceneItem>) scenes;
     }
 
     /**
@@ -35,4 +44,5 @@ public class GroupItem {
     public void addScene(SceneItem scene) {
         this.scenes.add(scene);
     }
+
 }

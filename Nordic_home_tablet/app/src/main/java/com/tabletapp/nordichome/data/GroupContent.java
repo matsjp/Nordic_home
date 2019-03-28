@@ -1,11 +1,9 @@
-package com.tabletapp.nordichome.group;
+package com.tabletapp.nordichome.data;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.tabletapp.nordichome.group.GroupItem;
 
 /**
  * Class used to preview the information belonging to the groups in the Nordic Home
@@ -20,6 +18,8 @@ public class GroupContent {
      */
     public static final List<GroupItem> ITEMS = new ArrayList<>();
 
+
+
     /**
      * A map of sample (group) items, by ID.
      */
@@ -30,9 +30,9 @@ public class GroupContent {
         ArrayList<GroupItem> groups = new ArrayList<>();
 
         //Adds sample groups
-        groups.add(new GroupItem("Kitchen"));
-        groups.add(new GroupItem("Bathroom"));
-        groups.add(new GroupItem("Bedroom"));
+        groups.add(new GroupItem("Kitchen", new SceneItem("On"), new SceneItem("Off")));
+        groups.add(new GroupItem("Bathroom", new SceneItem("On"), new SceneItem("Off"), new SceneItem("Dim")));
+        groups.add(new GroupItem("Bedroom", new SceneItem("On"), new SceneItem("Off")));
         groups.add(new GroupItem("Livingroom"));
 
         for (GroupItem group : groups) {
@@ -47,16 +47,16 @@ public class GroupContent {
 /*
     private static GroupItem createGroupItem(String name) {
         return new GroupItem(name);
-    }
+    }*/
 
-/*    private static String makeDetails(int position) {
+    private static String makeDetails(int position) {
         StringBuilder builder = new StringBuilder();
         builder.append("Details about GroupItem: ").append(position);
         for (int i = 0; i < position; i++) {
             builder.append("\nMore details information here.");
         }
         return builder.toString();
-    }*/
+    }
 
 /*    *//**
      * A group item representing a piece of content.

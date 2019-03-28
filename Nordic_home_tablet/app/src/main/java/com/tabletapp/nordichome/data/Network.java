@@ -1,4 +1,4 @@
-package com.tabletapp.nordichome.group;
+package com.tabletapp.nordichome.data;
 
 /**
  * Class to represent a specific network in the Nordic Home

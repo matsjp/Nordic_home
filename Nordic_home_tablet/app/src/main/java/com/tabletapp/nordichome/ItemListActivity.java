@@ -13,13 +13,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tabletapp.nordichome.group.GroupContent;
-import com.tabletapp.nordichome.group.GroupItem;
-import com.tabletapp.nordichome.group.Network;
+import com.tabletapp.nordichome.data.GroupContent;
+import com.tabletapp.nordichome.data.GroupItem;
+import com.tabletapp.nordichome.data.Network;
 
 import java.util.List;
 

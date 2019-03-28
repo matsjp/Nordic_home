@@ -1,11 +1,9 @@
-package com.tabletapp.nordichome.group;
+package com.tabletapp.nordichome.data;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.tabletapp.nordichome.group.GroupItem;
 
 /**
  * Class used to preview the information belonging to the groups in the Nordic Home

@@ -18,7 +18,7 @@ public class HomePageActivity extends AppCompatActivity {
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE); //Landscape mode
 
 
-        Button btnSignIn = (Button)findViewById(R.id.btnSignIn);
+        Button btnSignIn = (Button)findViewById(R.id.btnGetStarted);
 
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override

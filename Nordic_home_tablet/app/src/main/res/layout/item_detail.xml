@@ -17,23 +17,45 @@
         android:textIsSelectable="true"
         tools:context=".ItemDetailFragment" />
 
-    <TableRow
-        android:id="@+id/tableRow1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="5dip"
-        android:gravity="center_horizontal">
 
-        <Button
-            android:id="@+id/button1"
-            android:text="Scene1"/>
-        <Button
-            android:id="@+id/button2"
-            android:text="Scene2" />
-        <Button
-            android:id="@+id/button3"
-            android:text="Scene3" />
+        <RadioGroup
 
-    </TableRow>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
+            <RadioButton
+                android:id="@+id/btnOn"
+                android:layout_weight="1"
+                android:layout_height="100dp"
+                android:layout_width="20dp"
+                android:background="@drawable/button_background"
+                android:button="@android:color/transparent"
+                android:checked="true"
+                android:text="ON"
+                android:textAlignment="center"/>
+
+            <RadioButton
+                android:id="@+id/btnOff"
+                android:layout_weight="1"
+                android:layout_height="100dp"
+                android:layout_width="20dp"
+                android:background="@drawable/button_background"
+                android:button="@android:color/transparent"
+                android:checked="false"
+                android:text="OFF"
+                android:textAlignment="center"/>
+
+            <RadioButton
+                android:id="@+id/btnDim"
+                android:layout_weight="1"
+                android:layout_height="100dp"
+                android:layout_width="20dp"
+                android:background="@drawable/button_background"
+                android:button="@android:color/transparent"
+                android:checked="false"
+                android:text="DIM"
+                android:textAlignment="center"/>
+
+        </RadioGroup>
 </TableLayout>

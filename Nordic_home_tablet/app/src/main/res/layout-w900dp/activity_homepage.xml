@@ -1,15 +1,31 @@
 <RelativeLayout
     android:layout_height="match_parent"
     android:layout_width="match_parent"
+    android:background="@color/colorPrimaryDark"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="@string/welcome"
+        android:textColor="@color/colorText"
+        style="?android:attr/textAppearanceLarge"
+        android:layout_marginTop="140dp"/>
+
+    <ImageView
+        android:layout_width="525dp"
+        android:layout_height="427dp"
+        android:layout_centerInParent="true"
+        android:contentDescription="@string/logo"
+        android:src="@mipmap/ic_launcher_foreground" />
 
     <Button
-        android:id="@+id/btnSignIn"
+        android:id="@+id/btnGetStarted"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="150dp"
-        android:text="@string/btnSignIn" />
+        android:layout_marginBottom="130dp"
+        android:text="@string/btnGetStarted" />
 </RelativeLayout>

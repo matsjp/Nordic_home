@@ -9,11 +9,13 @@ import android.view.ViewGroup;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+
 import com.tabletapp.nordichome.data.GroupContent;
 import com.tabletapp.nordichome.data.GroupItem;
 import com.tabletapp.nordichome.data.SceneItem;
 
 import java.util.ArrayList;
+
 
 /**
  * A fragment representing a single Item detail screen.

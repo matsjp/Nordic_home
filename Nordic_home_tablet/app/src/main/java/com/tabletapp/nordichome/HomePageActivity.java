@@ -41,7 +41,6 @@ public class HomePageActivity extends AppCompatActivity {
                 requestSignIn();
             }
         });
-
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {

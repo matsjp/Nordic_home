@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import no.nordicsemi.android.meshprovisioner.Group;
+
 /**
  * Class used to preview the information belonging to the groups in the Nordic Home
  * @author Sunniva Mathea Runde
@@ -17,6 +19,13 @@ public class GroupContent {
      * An array of group items
      */
     public static final List<GroupItem> ITEMS = new ArrayList<>();
+    private final Group[] groupInNetwork;
+
+    public GroupContent(Group... group){
+        this.groupInNetwork = group;
+    }
+
+    
 
 
 

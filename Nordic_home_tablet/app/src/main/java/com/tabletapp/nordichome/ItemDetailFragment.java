@@ -1,15 +1,11 @@
 package com.tabletapp.nordichome;
 
-import android.app.Activity;
-import android.support.design.widget.CollapsingToolbarLayout;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -38,6 +34,7 @@ public class ItemDetailFragment extends Fragment {
      */
     private GroupItem mItem;
     private ArrayList<SceneItem> groupScenes;
+    private int currentNum;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -59,34 +56,63 @@ public class ItemDetailFragment extends Fragment {
     }
 
 
+    @SuppressLint("SetTextI18n")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.item_detail, container, false);
         RadioGroup groupOfScenes = rootView.findViewById(R.id.btnScenes);
         //groupOfScenes.setVisibility(View.GONE);
 
-        /*TODO: Her maa vi paa en eller annen måte klare å ta bort knapper som gjelder scenes som ikke er i JSON filen
+        /*TODO: Her maa vi paa en eller annen maate klare aa ta bort knapper som gjelder scenes som ikke er i JSON filen
           btn.setVisiblity(View.GONE)
           btn.setVisiblity(Viev.VISIBLE)
         */
 
+
+        //todo: num has to be the number of scenes connected the the group
         if (mItem != null) {
             //Setting the text for the detail part. This is where we want the gridview to show.
             ((TextView) rootView.findViewById(R.id.item_detail_text)).setText(mItem.name);
-
+            //Changing header when button is clicked - not done.
+            groupOfScenes.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+            {
+                @Override
+                public void onCheckedChanged(RadioGroup group, int checkedId)
+                {
+                    switch(checkedId)
+                    {
+                        case R.id.btnOn:
+                            ((TextView) rootView.findViewById(R.id.item_detail_text)).setText("hallooo");
+                            break;
+                        case R.id.btnOff:
+                            ((TextView) rootView.findViewById(R.id.item_detail_text)).setText("hallooo2");
+                            break;
+                        case R.id.btnDim:
+                            ((TextView) rootView.findViewById(R.id.item_detail_text)).setText("hallooo3");
+                            break;
+                    }
+                }
+            });
             // test adding a radio button programmatically
+
+           /* LinearLayout.LayoutParams layoutParams = new RadioGroup.LayoutParams(
+                    RadioGroup.LayoutParams.WRAP_CONTENT,
+                    RadioGroup.LayoutParams.WRAP_CONTENT);
+
             RadioButton newRadioButton = new RadioButton(this.getContext());
             newRadioButton.setText(mItem.getScenesList().get(0).getName());
             newRadioButton.setId(R.id.btnOn);
-            LinearLayout.LayoutParams layoutParams = new RadioGroup.LayoutParams(
-                    RadioGroup.LayoutParams.WRAP_CONTENT,
-                    RadioGroup.LayoutParams.WRAP_CONTENT);
             groupOfScenes.addView(newRadioButton, 0, layoutParams);
 
             RadioButton newRadioButton2 = new RadioButton(this.getContext());
-            newRadioButton.setText(mItem.getScenesList().get(1).getName());
-            newRadioButton.setId(R.id.btnOff);
+            newRadioButton2.setText(mItem.getScenesList().get(1).getName());
+            newRadioButton2.setId(R.id.btnOff);
             groupOfScenes.addView(newRadioButton2, 1, layoutParams);
+
+            RadioButton newRadioButton3 = new RadioButton(this.getContext());
+            newRadioButton3.setText(mItem.getScenesList().get(1).getName());
+            newRadioButton3.setId(R.id.btnDim);
+            groupOfScenes.addView(newRadioButton3, 3, layoutParams);*/
 
         }
 

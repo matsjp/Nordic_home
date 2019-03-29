@@ -2,6 +2,9 @@ package com.tabletapp.nordichome;
 
 import android.app.Application;
 
+
+import no.nordicsemi.android.meshprovisioner.MeshNetwork;
+
 public class ApplicationExtension extends Application {
     //Be careful when editing this file.
     //Read this before touching anything https://github.com/codepath/android_guides/wiki/Understanding-the-Android-Application-Class
@@ -21,6 +24,12 @@ public class ApplicationExtension extends Application {
 
     public void setDriveServiceRepo(DriveServiceRepo driveServiceRepo){
         this.driveServiceRepo = driveServiceRepo;
+        ApplicationExtension application = (ApplicationExtension) getApplicationContext();
+        ScannerRepo scannerRepo = application.getScannerRepo();
+        MeshNetwork network = scannerRepo.getMeshManagerApi().getMeshNetwork();
+
+
+
     }
 
     public DriveServiceRepo getDriveServiceRepo(){

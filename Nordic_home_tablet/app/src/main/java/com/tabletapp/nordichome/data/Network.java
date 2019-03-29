@@ -13,4 +13,9 @@ public class Network {
     public Network(String networkName){
         this.networkName = networkName;
     }
+
+    public String getNetworkName() {
+        return networkName;
+    }
+
 }

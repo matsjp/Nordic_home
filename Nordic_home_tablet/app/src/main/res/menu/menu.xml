@@ -8,7 +8,7 @@
         app:showAsAction="never" />
     <item android:id="@+id/signOut"
         android:orderInCategory="100"
-        android:title="Sign out"
+        android:title="@string/sign_out"
         app:showAsAction="never" />
 
 </menu>

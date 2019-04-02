@@ -89,7 +89,7 @@ public class NetworkActivity extends AppCompatActivity {
             driveRepo.queryJsonFiles()
                     .addOnSuccessListener(fileList -> {
                         for (File file : fileList.getFiles()) {
-                            ((JsonFilesAdapter) mAdapter).addData(file);
+                            (mAdapter).addData(file);
                         }
                     })
                     .addOnFailureListener(exception -> Log.e(TAG, "Unable to query files.", exception));

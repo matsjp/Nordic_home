@@ -16,11 +16,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tabletapp.nordichome.data.GroupContent;
-import com.tabletapp.nordichome.data.GroupItem;
-import com.tabletapp.nordichome.data.Network;
-
+import java.util.ArrayList;
 import java.util.List;
+
+import no.nordicsemi.android.meshprovisioner.Group;
+import no.nordicsemi.android.meshprovisioner.MeshNetwork;
 
 /**
  * An activity representing a list of Items. This activity
@@ -32,13 +32,13 @@ import java.util.List;
  */
 public class ItemListActivity extends AppCompatActivity {
 
+    private static final String TAG = ItemListActivity.class.getSimpleName();
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
     private boolean mTwoPane;
-    //TODO: get networkname/address from JSON file.
-    public Network currentNetwork = new Network("Bakkegata 2");
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +52,7 @@ public class ItemListActivity extends AppCompatActivity {
 
 
         //TextView txtAddress = (TextView) findViewById(R.id.txtAddress);
-        //txtAddress.setText(currentNetwork.networkName);
+        //txtAddress.setText(currentNW.getName());
 
         if (findViewById(R.id.item_detail_container) != null) {
             // The detail container view will be present only in the
@@ -65,6 +65,23 @@ public class ItemListActivity extends AppCompatActivity {
         View recyclerView = findViewById(R.id.item_list);
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
+
+        /*RecyclerView recyclerView = (RecyclerView) findViewById(R.id.item_list);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        RecyclerView.Adapter adapter = new ItemListAdapter(this);
+        recyclerView.setAdapter(adapter);
+
+        ApplicationExtension application = (ApplicationExtension) getApplication();
+        MeshNetwork meshNetwork = application.getScannerRepo().getMeshManagerApi().getMeshNetwork();
+
+        //Log.d(TAG, meshNetwork.getMeshUUID());
+        if (meshNetwork != null) {
+            for (Group group : meshNetwork.getGroups()) {
+                ((ItemListAdapter) adapter).addData(group);
+            }
+        }*/
+
 
         Boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE)
                 .getBoolean("isFirstRun", true);
@@ -82,7 +99,15 @@ public class ItemListActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, GroupContent.ITEMS, mTwoPane));
+        ApplicationExtension application = (ApplicationExtension) getApplication();
+        MeshNetwork meshNetwork = application.getScannerRepo().getMeshManagerApi().getMeshNetwork();
+
+        //Log.d(TAG, meshNetwork.getMeshUUID());
+        ArrayList<Group> groups = new ArrayList<>();
+        if (meshNetwork != null) {
+            groups = new ArrayList<>(meshNetwork.getGroups());
+        }
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(this, groups, mTwoPane));
     }
 
     @Override
@@ -96,11 +121,11 @@ public class ItemListActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                //TODO: user wants to update the JSON fil - Redirect to google login
-
                 Intent intent = new Intent(ItemListActivity.this, NetworkActivity.class);
                 startActivity(intent);
-
+            case R.id.connect:
+                ApplicationExtension application = (ApplicationExtension) getApplication();
+                application.getScannerRepo().connectToProvisionedNode();
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
@@ -113,15 +138,16 @@ public class ItemListActivity extends AppCompatActivity {
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
         private final ItemListActivity mParentActivity;
-        private final List<GroupItem> mValues;
+        private final List<Group> groups;
         private final boolean mTwoPane;
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                GroupItem item = (GroupItem) view.getTag();
+                Group group = (Group) view.getTag();
+
                 if (mTwoPane) {
                     Bundle arguments = new Bundle();
-                    arguments.putString(ItemDetailFragment.ARG_ITEM_NAME, item.name);
+                    arguments.putParcelable("group", group);
                     ItemDetailFragment fragment = new ItemDetailFragment();
                     fragment.setArguments(arguments);
                     mParentActivity.getSupportFragmentManager().beginTransaction()
@@ -130,7 +156,7 @@ public class ItemListActivity extends AppCompatActivity {
                 } else {
                     Context context = view.getContext();
                     Intent intent = new Intent(context, ItemDetailActivity.class);
-                    intent.putExtra(ItemDetailFragment.ARG_ITEM_NAME, item.name);
+                    intent.putExtra("group", group);
 
                     context.startActivity(intent);
                 }
@@ -138,9 +164,9 @@ public class ItemListActivity extends AppCompatActivity {
         };
 
         SimpleItemRecyclerViewAdapter(ItemListActivity parent,
-                                      List<GroupItem> items,
+                                      List<Group> groups,
                                       boolean twoPane) {
-            mValues = items;
+            this.groups = groups;
             mParentActivity = parent;
             mTwoPane = twoPane;
         }
@@ -154,15 +180,16 @@ public class ItemListActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
-            holder.mContentView.setText(mValues.get(position).name);
+            holder.mContentView.setText(groups.get(position).getName());
+            holder.itemView.setTag(groups.get(position));
 
-            holder.itemView.setTag(mValues.get(position));
+            //holder.itemView.setTag(groups.get(position));
             holder.itemView.setOnClickListener(mOnClickListener);
         }
 
         @Override
         public int getItemCount() {
-            return mValues.size();
+            return groups.size();
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {

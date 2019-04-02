@@ -21,6 +21,7 @@ import no.nordicsemi.android.meshprovisioner.MeshManagerCallbacks;
 import no.nordicsemi.android.meshprovisioner.MeshNetwork;
 import no.nordicsemi.android.meshprovisioner.MeshProvisioningStatusCallbacks;
 import no.nordicsemi.android.meshprovisioner.MeshStatusCallbacks;
+import no.nordicsemi.android.meshprovisioner.Scene;
 import no.nordicsemi.android.meshprovisioner.UnprovisionedBeacon;
 import no.nordicsemi.android.meshprovisioner.provisionerstates.ProvisioningState;
 import no.nordicsemi.android.meshprovisioner.provisionerstates.UnprovisionedMeshNode;
@@ -38,6 +39,7 @@ import no.nordicsemi.android.meshprovisioner.transport.MeshMessage;
 import no.nordicsemi.android.meshprovisioner.transport.MeshModel;
 import no.nordicsemi.android.meshprovisioner.transport.ProvisionedMeshNode;
 import no.nordicsemi.android.meshprovisioner.transport.SceneRegisterStatus;
+import no.nordicsemi.android.meshprovisioner.transport.SceneStatus;
 import no.nordicsemi.android.meshprovisioner.transport.SceneStore;
 import no.nordicsemi.android.support.v18.scanner.BluetoothLeScannerCompat;
 import no.nordicsemi.android.support.v18.scanner.ScanCallback;
@@ -47,6 +49,7 @@ import no.nordicsemi.android.support.v18.scanner.ScanResult;
 import no.nordicsemi.android.support.v18.scanner.ScanSettings;
 
 import static com.tabletapp.nordichome.BleMeshManager.MESH_PROXY_UUID;
+import static com.tabletapp.nordichome.Utils.addressBytesToInt;
 import static no.nordicsemi.android.meshprovisioner.provisionerstates.ProvisioningState.States.PROVISIONING_CAPABILITIES;
 
 public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallbacks, MeshStatusCallbacks, MeshProvisioningStatusCallbacks {
@@ -344,6 +347,7 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
         this.meshNetwork = meshNetwork;
         Log.d(TAG, meshNetwork.getMeshUUID());
         //mMeshManagerApi.exportMeshNetwork(context.getFilesDir().getPath());
+        Log.d(TAG, getMeshManagerApi().getMeshNetwork().getMeshUUID());
     }
 
     @Override
@@ -360,6 +364,7 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
         this.meshNetwork = meshNetwork;
     }
 
+    //Imports and replaces network
     @Override
     public void onNetworkImported(MeshNetwork meshNetwork) {
         Log.d(TAG, "onNetworkmported");
@@ -606,6 +611,9 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
         else if (meshMessage instanceof SceneRegisterStatus){
             Log.d(TAG, "SceneRegisterStatus");
         }
+        else if (meshMessage instanceof SceneStatus){
+            Log.d(TAG, "SceneStatus");
+        }
     }
 
     @Override
@@ -634,5 +642,61 @@ public class ScannerRepo implements BleMeshManagerCallbacks, MeshManagerCallback
         this.sceneNum = sceneNum;
 
         mMeshManagerApi.sendMeshMessage(group.getGroupAddress(), meshMessage);
+    }
+
+    public List<Scene> getGroupsScenes(Group group){
+        ArrayList<Scene> groupScenes = new ArrayList<>();
+        ArrayList<Scene> scenes = new ArrayList<>(this.meshNetwork.getScenes());
+        for (Scene scene : scenes){
+            byte[] sceneAddress = scene.getAddresses().get(0);
+            if (sceneAddress != null){
+                if (addressBytesToInt(sceneAddress) == group.getGroupAddress()){
+                    groupScenes.add(scene);
+                }
+            }
+        }
+        return groupScenes;
+    }
+
+    public void connectToProvisionedNode() {
+        Log.d(TAG, "Connect to provisioned nodes");
+        if(isScanning)
+            return;
+
+        final List<ScanFilter> filters = new ArrayList<>();
+        filters.add(new ScanFilter.Builder().setServiceUuid(new ParcelUuid((MESH_PROXY_UUID))).build());
+        BluetoothLeScannerCompat scanner = BluetoothLeScannerCompat.getScanner();
+
+        final ScanSettings settings = new ScanSettings.Builder()
+                .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+                // Refresh the devices list every second
+                .setReportDelay(0)
+                // Hardware filtering has some issues on selected devices
+                .setUseHardwareFilteringIfSupported(false)
+                // Samsung S6 and S6 Edge report equal value of RSSI for all devices. In this app we ignore the RSSI.
+                /*.setUseHardwareBatchingIfSupported(false)*/
+                .build();
+        ScanCallback connectToProvisionedNodesCallback = new ScanCallback() {
+            @Override
+            public void onScanResult(int callbackType, ScanResult result) {
+                Log.d(TAG, "Result");
+                final ScanRecord scanRecord = result.getScanRecord();
+                if (scanRecord != null) {
+                    final byte[] serviceData = getServiceData(result, MESH_PROXY_UUID);
+                    if (serviceData != null) {
+                        if (mMeshManagerApi.isAdvertisingWithNetworkIdentity(serviceData)) {
+                            String networkId = mMeshManagerApi.generateNetworkId(mMeshManagerApi.getMeshNetwork().getNetKeys().get(0).getKey());
+                            if (mMeshManagerApi.networkIdMatches(networkId, serviceData)) {
+                                scanner.stopScan(this);
+                                isScanning = false;
+                                mBleMeshManager.connect(result.getDevice());
+                            }
+                        }
+                    }
+                }
+            }
+        };
+        scanner.startScan(filters, settings, connectToProvisionedNodesCallback);
+        isScanning = true;
     }
 }

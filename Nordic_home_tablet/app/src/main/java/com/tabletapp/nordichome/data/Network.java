@@ -8,14 +8,4 @@ package com.tabletapp.nordichome.data;
 
 public class Network {
 
-    public final String networkName;
-
-    public Network(String networkName){
-        this.networkName = networkName;
-    }
-
-    public String getNetworkName() {
-        return networkName;
-    }
-
 }

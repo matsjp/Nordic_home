@@ -2,6 +2,7 @@ package com.tabletapp.nordichome;
 
 import android.arch.lifecycle.Observer;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.api.services.drive.model.File;
 
@@ -19,7 +21,7 @@ import java.util.ArrayList;
 
 public class JsonFilesAdapter extends RecyclerView.Adapter<JsonFilesAdapter.MyViewHolder> {
     private ArrayList<File> mDataset = new ArrayList<>();
-    public static String TAG = JsonFilesAdapter.class.getSimpleName();
+    public static String TAG = ItemListAdapter.class.getSimpleName();
     private Context context;
     private JsonFilesViewModel jsonFilesViewModel;
 
@@ -40,7 +42,7 @@ public class JsonFilesAdapter extends RecyclerView.Adapter<JsonFilesAdapter.MyVi
 
                 @Override
                 public void onClick(View v) {
-                    Log.d(JsonFilesAdapter.TAG, mDataset.get(getAdapterPosition()).getId());
+                    Log.d(ItemListAdapter.TAG, mDataset.get(getAdapterPosition()).getId());
                     ApplicationExtension application = (ApplicationExtension) context.getApplicationContext();
                     application.getDriveServiceRepo().downloadFile(mDataset.get(getAdapterPosition()).getId()).addOnSuccessListener(name -> {
                         java.io.File file = new java.io.File(context.getFilesDir(), name);
@@ -63,6 +65,12 @@ public class JsonFilesAdapter extends RecyclerView.Adapter<JsonFilesAdapter.MyVi
             public void onChanged(@Nullable Boolean signal) {
                 Log.d(TAG, "getImportSuccessSignal");
                 if (signal){
+                    ApplicationExtension application = (ApplicationExtension) context.getApplication();
+                    application.getScannerRepo().getImportSuccessSignal().postValue(false);
+                    Toast.makeText(context, "Network Imported", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(context, ItemListActivity.class);
+                    context.startActivity(intent);
+
                 }
             }
         });
@@ -76,7 +84,7 @@ public class JsonFilesAdapter extends RecyclerView.Adapter<JsonFilesAdapter.MyVi
     // Create new views (invoked by the layout manager)
     @Override
     public JsonFilesAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
-                                                     int viewType) {
+                                                           int viewType) {
         // create a new view
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.json_text_view, parent, false);

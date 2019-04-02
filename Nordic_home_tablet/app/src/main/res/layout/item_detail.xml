@@ -25,51 +25,6 @@
             android:orientation="horizontal"
             android:padding="@dimen/button_padding"
             android:layout_weight="1">
-
-            <RadioButton
-                android:id="@+id/btnOn"
-                android:layout_margin="@dimen/button_margin"
-
-                android:layout_height="@dimen/button_size"
-                android:layout_width="@dimen/button_size"
-
-                android:background="@drawable/button_background"
-                android:button="@android:color/transparent"
-                android:checked="true"
-
-                android:text="ON"
-                android:textAlignment="center"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="@dimen/button_text_size"/>
-
-            <RadioButton
-                android:id="@+id/btnOff"
-                android:layout_margin="@dimen/button_margin"
-
-                android:layout_height="@dimen/button_size"
-                android:layout_width="@dimen/button_size"
-                android:background="@drawable/button_background"
-                android:button="@android:color/transparent"
-                android:checked="false"
-                android:text="OFF"
-                android:textAlignment="center"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="@dimen/button_text_size"/>
-
-            <RadioButton
-                android:id="@+id/btnDim"
-                android:layout_margin="@dimen/button_margin"
-
-                android:layout_height="@dimen/button_size"
-                android:layout_width="@dimen/button_size"
-                android:background="@drawable/button_background"
-                android:button="@android:color/transparent"
-                android:checked="false"
-                android:text="DIM"
-                android:textAlignment="center"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="@dimen/button_text_size"/>
-
         </RadioGroup>
 
 

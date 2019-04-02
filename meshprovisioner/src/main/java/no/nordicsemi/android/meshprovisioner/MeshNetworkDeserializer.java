@@ -312,6 +312,7 @@ public final class MeshNetworkDeserializer implements JsonSerializer<MeshNetwork
                 final int number = jsonScene.get("number").getAsInt();
                 final Scene scene = new Scene(number, addresses, meshUuid);
                 scene.setName(name);
+                scenes.add(scene);
             }
         } catch (Exception ex) {
             Log.e(TAG, "Error while de-serializing scenes: " + ex.getMessage());

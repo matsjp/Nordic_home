@@ -37,9 +37,9 @@ public class GroupContent {
         ArrayList<GroupItem> groups = new ArrayList<>();
 
         //Adds sample groups
-        groups.add(new GroupItem("Kitchen", new SceneItem("On"), new SceneItem("Off")));
-        groups.add(new GroupItem("Bathroom", new SceneItem("On"), new SceneItem("Off"), new SceneItem("Dim")));
-        groups.add(new GroupItem("Bedroom", new SceneItem("On"), new SceneItem("Off")));
+        groups.add(new GroupItem("Kitchen", new SceneItem("On", "123", 1), new SceneItem("Off", "13", 2)));
+        groups.add(new GroupItem("Bathroom", new SceneItem("On", "12", 3), new SceneItem("Off", "23", 4), new SceneItem("Dim", "1234", 5)));
+        groups.add(new GroupItem("Bedroom"));
         groups.add(new GroupItem("Livingroom"));
 
         for (GroupItem group : groups) {

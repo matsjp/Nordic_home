@@ -7,12 +7,14 @@ public class Network {
     private final String address;
 
     private HashMap<String, ArrayList<String>> groups = new HashMap<String, ArrayList<String>>();
+    private HashMap<String, ArrayList<String>> parentGroups = new HashMap<>();
 
 
     public Network(String name, String address) {
         this.name = name;
         this.address = address;
         this.groups = this.getFullGroups();
+        this.parentGroups = this.getFullParentGroups();
     }
 
     public String getName() {
@@ -33,7 +35,7 @@ public class Network {
        ArrayList<String> scenes = new ArrayList<>();
        scenes.add("On");
        scenes.add("Off");
-       scenes.add("Dimmed");
+       scenes.add("Dim");
 
        this.groups.put(group,scenes);
     }
@@ -47,4 +49,16 @@ public class Network {
         return keys;
     }
 
+    public HashMap<String, ArrayList<String>> getFullParentGroups() {
+        return parentGroups;
+    }
+
+    public Set<String> getParentGroups(){
+        Set<String> keys = parentGroups.keySet();
+        return keys;
+    }
+
+    public void addParentGroup(String groupName, ArrayList<String> groups){
+        this.parentGroups.put(groupName, groups);
+    }
 }

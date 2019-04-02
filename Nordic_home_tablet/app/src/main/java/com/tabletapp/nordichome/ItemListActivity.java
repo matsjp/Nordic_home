@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +16,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.api.services.drive.DriveScopes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,17 +130,23 @@ public class ItemListActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
+                Log.d(TAG, "Import button");
                 Intent intent = new Intent(ItemListActivity.this, NetworkActivity.class);
-                startActivity(intent);
+                startActivity(intent); break;
             case R.id.connect:
+                Log.d(TAG, "ConnectButton");
                 ApplicationExtension application = (ApplicationExtension) getApplication();
-                application.getScannerRepo().connectToProvisionedNode();
+                application.getScannerRepo().connectToProvisionedNode(); break;
+            case R.id.signOut:
+                Log.d(TAG, Integer.toString(item.getItemId()));
+                signOut(); break;
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
-                return super.onOptionsItemSelected(item);
+                super.onOptionsItemSelected(item);
 
         }
+        return false;
     }
 
     public static class SimpleItemRecyclerViewAdapter
@@ -200,5 +215,25 @@ public class ItemListActivity extends AppCompatActivity {
                 mContentView = (TextView) view.findViewById(R.id.content);
             }
         }
+    }
+
+    private void signOut(){
+        Log.d(TAG, "Signing out");
+        GoogleSignInOptions signInOptions =
+                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestEmail()
+                        .requestScopes(new Scope(DriveScopes.DRIVE))
+                        .build();
+        GoogleSignInClient client = GoogleSignIn.getClient(this, signInOptions);
+
+        client.signOut().addOnCompleteListener(this, new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Intent intent = new Intent(ItemListActivity.this, HomePageActivity.class);
+                startActivity(intent);
+                Log.d(TAG, "Signed out");
+            }
+        });
+
     }
 }

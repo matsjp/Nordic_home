@@ -108,12 +108,14 @@ public class ItemDetailFragment extends Fragment {
                 radioButton.setBackgroundResource(R.drawable.button_background);
                 radioButton.setButtonDrawable(android.R.color.transparent);
                 radioButton.setText(scene.getName());
+                radioButton.setTextAlignment(View.TEXT_ALIGNMENT_GRAVITY);
                 RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(
-                        250,
-                        250
+                        300,
+                        300
                 );
                 params.setMargins(10, 10, 10, 10);
-                radioButton.setTextSize(10);
+                radioButton.setPadding(50,50,50,50);
+                radioButton.setTextSize(25);
                 radioButton.setLayoutParams(params);
                 groupOfScenes.addView(radioButton);
                 index++;

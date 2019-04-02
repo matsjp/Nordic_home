@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 public class JsonFilesAdapter extends RecyclerView.Adapter<JsonFilesAdapter.MyViewHolder> {
     private ArrayList<File> mDataset = new ArrayList<>();
-    public static String TAG = ItemListAdapter.class.getSimpleName();
+    public static String TAG = JsonFilesAdapter.class.getSimpleName();
     private Context context;
     private JsonFilesViewModel jsonFilesViewModel;
 
@@ -42,7 +42,7 @@ public class JsonFilesAdapter extends RecyclerView.Adapter<JsonFilesAdapter.MyVi
 
                 @Override
                 public void onClick(View v) {
-                    Log.d(ItemListAdapter.TAG, mDataset.get(getAdapterPosition()).getId());
+                    Log.d(JsonFilesAdapter.TAG, mDataset.get(getAdapterPosition()).getId());
                     ApplicationExtension application = (ApplicationExtension) context.getApplicationContext();
                     application.getDriveServiceRepo().downloadFile(mDataset.get(getAdapterPosition()).getId()).addOnSuccessListener(name -> {
                         java.io.File file = new java.io.File(context.getFilesDir(), name);

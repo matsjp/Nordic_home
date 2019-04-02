@@ -3,16 +3,13 @@ package com.tabletapp.nordichome;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-
-import com.tabletapp.nordichome.data.GroupItem;
-import com.tabletapp.nordichome.data.SceneItem;
 
 import java.util.ArrayList;
 
@@ -34,15 +31,6 @@ public class ItemDetailFragment extends Fragment {
      */
     public static final String ARG_ITEM_NAME = "item_name";
     public static final String TAG = ItemDetailFragment.class.getSimpleName();
-
-
-    /**
-     * The dummy content this fragment is presenting.
-     */
-    private GroupItem mItem;
-    private ArrayList<SceneItem> groupScenes;
-    private int currentNum;
-    private Log log;
     private Group group;
 
     /**
@@ -106,6 +94,7 @@ public class ItemDetailFragment extends Fragment {
                 radioButton.setId(index);
                 //radioButton.setBackground(getContext().getResources().getDrawable(R.drawable.button_background));
                 radioButton.setBackgroundResource(R.drawable.button_background);
+                radioButton.setGravity(Gravity.CENTER);
                 radioButton.setButtonDrawable(android.R.color.transparent);
                 radioButton.setText(scene.getName());
                 radioButton.setTextAlignment(View.TEXT_ALIGNMENT_GRAVITY);

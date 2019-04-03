@@ -32,7 +32,7 @@
                      </font>
                   </JFXButton>
                   <JFXListView fx:id="lwNetworkList" layoutX="14.0" layoutY="68.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="437.0" prefWidth="200.0" style="-fx-border-color: #A9A9A9#A9A9A9;" />
-                  <AnchorPane fx:id="apNetworkInfo" layoutX="222.0" layoutY="67.0" prefHeight="513.0" prefWidth="668.0" style="-fx-border-color: #A9A9A9#A9A9A9;" visible="false">
+                  <AnchorPane fx:id="apNetworkInfo" layoutX="222.0" layoutY="67.0" prefHeight="513.0" prefWidth="668.0" visible="false">
                      <children>
                         <Label layoutX="14.0" layoutY="40.0" prefHeight="17.0" prefWidth="118.0" text="Network address:">
                            <font>

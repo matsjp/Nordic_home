@@ -57,8 +57,6 @@ public class NetworksController {
     private void initialize() {
         showNetworks();
         showChosenNetwork();
-        showChosenNetwork();
-
     }
 
     /**
@@ -297,9 +295,6 @@ public class NetworksController {
 
         content.setBody(grid);
 
-
-        //content.setBody(group);
-
         JFXDialog dialogNewGroup = new JFXDialog(stackPane, content, JFXDialog.DialogTransition.CENTER, true);
         JFXButton add = new JFXButton("Add");
         JFXButton close = new JFXButton("Close");
@@ -312,7 +307,7 @@ public class NetworksController {
         //Button for adding the new group to the network
         add.setOnAction(event -> {
             try{
-                if (!group.getText().isEmpty()){
+                if (!group.getText().isEmpty() && !groupAlreadyExists(group.getText())){
                     String newGroup = group.getText();
                     Network network = lwNetworkList.getSelectionModel().getSelectedItem();
 
@@ -347,6 +342,24 @@ public class NetworksController {
     public void updateGroupListView(Network network){
         lvGroups.getItems().clear();
         lvGroups.getItems().addAll(network.getGroups());
+    }
+
+    //Help method to find out if the group already exists
+    public boolean groupAlreadyExists(String group){
+        Network network = lwNetworkList.getSelectionModel().getSelectedItem();
+        if (!network.getGroups().contains(group)){
+            return false;
+        }
+        JFXDialogLayout content = new JFXDialogLayout();
+        content.setBody(new Label("The group already exists."));
+        JFXDialog dialog= new JFXDialog(stackPane, content, JFXDialog.DialogTransition.CENTER, true);
+        JFXButton close = new JFXButton("Close");
+        close.setOnAction(event -> {
+            dialog.close();
+        });
+        content.setActions(close);
+        dialog.show();
+        return true;
     }
 
 
@@ -458,8 +471,11 @@ public class NetworksController {
                 //Button action for deleting the group
                 yes.setOnAction(event -> {
                     try {
+                        //Deleting the group from the network
                         Set<String> groups = network.getGroups();
                         groups.remove(group);
+
+                        //Updating the listview
                         lvGroups.getItems().clear();
                         lvGroups.getItems().addAll(groups);
                         dialogDeleteGroup.close();
@@ -483,6 +499,9 @@ public class NetworksController {
     }
 
 
+    /**
+     * createParentGroup: Method for creating a new parent group
+     * */
     public void createParentGroup(){
         Network network = lwNetworkList.getSelectionModel().getSelectedItem();
 
@@ -515,25 +534,22 @@ public class NetworksController {
             //Button action for closing the dialog
             close.setOnAction(event -> dialogCreateParent.close());
 
-            //Button action for deleting the group
+            //Button action for creating the new parent group
             add.setOnAction(event -> {
                 try {
-                    if(!parentGroupName.getText().isEmpty() && !groups.getText().isEmpty()) {
-                        //Getting the groups for the text fielt to add to the parent group
+                    if(!parentGroupName.getText().isEmpty() && !groups.getText().isEmpty() && multipleGroups(groups.getText()) && knownGroups(groups.getText()) ) {
+                        //Getting the groups for the text field to add to the parent group
                         ArrayList<String> resultGroups = findGroupsToParent(groups.getText());
                         String parentName = parentGroupName.getText();
 
-                        //Adding new parent group
+                        //Adding new parent group to the network
                         network.addParentGroup(parentName, resultGroups);
 
-
+                        //Updating the listview
                         lvParentGroups.getItems().clear();
                         lvParentGroups.getItems().addAll(network.getParentGroups());
 
                         dialogCreateParent.close();
-
-                        System.out.println("Parentgrupper nå: " + network.getFullParentGroups().keySet());
-                        System.out.println("Grupper som hører til den nye er: " + resultGroups);
                     }
                 } catch (NullPointerException e) {
                     System.out.println("Exception when creating a parent group --> " + e);
@@ -552,7 +568,7 @@ public class NetworksController {
 
     //Help method for finding the groups to add to the parent group
     public ArrayList<String> findGroupsToParent(String groupString){
-        String [] groups = groupString.split(",");
+        String [] groups = groupString.split(", ");
         ArrayList<String> groupResult = new ArrayList<>();
 
         for (String group: groups) {
@@ -562,6 +578,54 @@ public class NetworksController {
         return groupResult;
     }
 
+    //Help method for checking that all groups listed exists
+    public boolean knownGroups(String groupString){
+        Network network = lwNetworkList.getSelectionModel().getSelectedItem();
+        String [] groups = groupString.split(", ");
+
+        for(String group: groups){
+            if(!network.getGroups().contains(group)){
+                JFXDialogLayout content = new JFXDialogLayout();
+                content.setBody(new Label("There are one or more groups that does not exist."));
+
+                JFXDialog dialog = new JFXDialog(stackPane, content, JFXDialog.DialogTransition.CENTER, true);
+                JFXButton close = new JFXButton("Close");
+
+                //Button action for closing the dialog
+                close.setOnAction(event -> dialog.close());
+                content.setActions(close);
+                dialog.show();
+                return false;
+            }
+        }
+        return true;
+    }
+
+    //Help method for checking that more than one group are listed
+    public boolean multipleGroups(String groupString){
+        String [] groups = groupString.split(",");
+
+        if (groups.length <= 1){
+            //Dialog
+            JFXDialogLayout content = new JFXDialogLayout();
+            content.setBody(new Label("A parent group has to consist of more than one group."));
+
+            JFXDialog dialog = new JFXDialog(stackPane, content, JFXDialog.DialogTransition.CENTER, true);
+            JFXButton close = new JFXButton("Close");
+
+            //Button action for closing the dialog
+            close.setOnAction(event -> dialog.close());
+            content.setActions(close);
+            dialog.show();
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * deleteParentGroup: Method for deleting a parent group
+     * */
     public void deleteParentGroup(){
         Network network = lwNetworkList.getSelectionModel().getSelectedItem();
 
@@ -584,16 +648,17 @@ public class NetworksController {
                 //Button action for deleting the group
                 yes.setOnAction(event -> {
                     try {
+                        //Delete from the networks parent groups
                         Set<String> parentGroups = network.getParentGroups();
                         parentGroups.remove(parentGroup);
+
+                        //Delete from listview
                         lvParentGroups.getItems().clear();
                         lvParentGroups.getItems().addAll(parentGroups);
                         dialogDeleteParentGroup.close();
 
-                        System.out.println("Deleted parent group: " + parentGroup);
-                        System.out.println("Parentgrupper nå: " + network.getParentGroups());
                     } catch (NullPointerException e) {
-                        System.out.println("Exception deleting a group --> " + e);
+                        System.out.println("Exception deleting a parent group --> " + e);
                     }
                 });
 
@@ -603,7 +668,7 @@ public class NetworksController {
             }
 
         } catch (NullPointerException e){
-            System.out.println("Exception getting group when 'Delete group' ---> "+e);
+            System.out.println("Exception getting group when 'Delete parent group' ---> "+e);
         }
 
     }

@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:padding="16dp"
         android:textIsSelectable="true"
-        tools:context=".ItemDetailFragment" />
+        tools:context=".GroupScenesFragment" />
 
 
         <RadioGroup

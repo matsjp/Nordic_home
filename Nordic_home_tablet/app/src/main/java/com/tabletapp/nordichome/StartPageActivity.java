@@ -21,9 +21,9 @@ import com.google.api.services.drive.DriveScopes;
 
 import java.util.Collections;
 
-public class HomePageActivity extends AppCompatActivity {
+public class StartPageActivity extends AppCompatActivity {
 
-    private static final String TAG =HomePageActivity.class.getSimpleName() ;
+    private static final String TAG = StartPageActivity.class.getSimpleName() ;
     private static final int REQUEST_CODE_SIGN_IN = 1;
 
     @Override
@@ -104,13 +104,13 @@ public class HomePageActivity extends AppCompatActivity {
                                     credential)
                                     .setApplicationName("Drive API Migration")
                                     .build();
-                    startActivity(new Intent(HomePageActivity.this, ItemListActivity.class));
+                    startActivity(new Intent(StartPageActivity.this, GroupListActivity.class));
                     // The DriveServiceHelper encapsulates all REST API and SAF functionality.
                     // Its instantiation is required before handling any onClick action
                     DriveServiceRepo driveRepo = new DriveServiceRepo(googleDriveService, this);
                     ApplicationExtension application = (ApplicationExtension) getApplication();
                     application.setDriveServiceRepo(driveRepo);
-                    startActivity(new Intent(HomePageActivity.this, ItemListActivity.class));
+                    startActivity(new Intent(StartPageActivity.this, GroupListActivity.class));
 
                 })
                 .addOnFailureListener(exception -> Log.e(TAG, "Unable to sign in.", exception));

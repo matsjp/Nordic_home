@@ -35,13 +35,13 @@ import no.nordicsemi.android.meshprovisioner.MeshNetwork;
  * An activity representing a list of Items. This activity
  * has different presentations for handset and tablet-size devices. On
  * handsets, the activity presents a list of items, which when touched,
- * lead to a {@link ItemDetailActivity} representing
+ * lead to a {@link ScenesActivity} representing
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class ItemListActivity extends AppCompatActivity {
+public class GroupListActivity extends AppCompatActivity {
 
-    private static final String TAG = ItemListActivity.class.getSimpleName();
+    private static final String TAG = GroupListActivity.class.getSimpleName();
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
@@ -52,7 +52,7 @@ public class ItemListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_item_list);
+        setContentView(R.layout.activity_group);
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE); //Landscape mode
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -97,8 +97,8 @@ public class ItemListActivity extends AppCompatActivity {
 
         if (isFirstRun) {
             //show sign up activity
-            startActivity(new Intent(ItemListActivity.this, HomePageActivity.class));
-            Toast.makeText(ItemListActivity.this, "Run only once", Toast.LENGTH_LONG)
+            startActivity(new Intent(GroupListActivity.this, StartPageActivity.class));
+            Toast.makeText(GroupListActivity.this, "Run only once", Toast.LENGTH_LONG)
                     .show();
         }
 
@@ -131,7 +131,7 @@ public class ItemListActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_settings:
                 Log.d(TAG, "Import button");
-                Intent intent = new Intent(ItemListActivity.this, NetworkActivity.class);
+                Intent intent = new Intent(GroupListActivity.this, NetworkActivity.class);
                 startActivity(intent); break;
             case R.id.connect:
                 Log.d(TAG, "ConnectButton");
@@ -152,7 +152,7 @@ public class ItemListActivity extends AppCompatActivity {
     public static class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
-        private final ItemListActivity mParentActivity;
+        private final GroupListActivity mParentActivity;
         private final List<Group> groups;
         private final boolean mTwoPane;
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
@@ -163,14 +163,14 @@ public class ItemListActivity extends AppCompatActivity {
                 if (mTwoPane) {
                     Bundle arguments = new Bundle();
                     arguments.putParcelable("group", group);
-                    ItemDetailFragment fragment = new ItemDetailFragment();
+                    GroupScenesFragment fragment = new GroupScenesFragment();
                     fragment.setArguments(arguments);
                     mParentActivity.getSupportFragmentManager().beginTransaction()
                             .replace(R.id.item_detail_container, fragment)
                             .commit();
                 } else {
                     Context context = view.getContext();
-                    Intent intent = new Intent(context, ItemDetailActivity.class);
+                    Intent intent = new Intent(context, ScenesActivity.class);
                     intent.putExtra("group", group);
 
                     context.startActivity(intent);
@@ -178,7 +178,7 @@ public class ItemListActivity extends AppCompatActivity {
             }
         };
 
-        SimpleItemRecyclerViewAdapter(ItemListActivity parent,
+        SimpleItemRecyclerViewAdapter(GroupListActivity parent,
                                       List<Group> groups,
                                       boolean twoPane) {
             this.groups = groups;
@@ -229,7 +229,7 @@ public class ItemListActivity extends AppCompatActivity {
         client.signOut().addOnCompleteListener(this, new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                Intent intent = new Intent(ItemListActivity.this, HomePageActivity.class);
+                Intent intent = new Intent(GroupListActivity.this, StartPageActivity.class);
                 startActivity(intent);
                 Log.d(TAG, "Signed out");
             }

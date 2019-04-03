@@ -67,8 +67,8 @@ public class JsonFilesAdapter extends RecyclerView.Adapter<JsonFilesAdapter.MyVi
                 if (signal){
                     ApplicationExtension application = (ApplicationExtension) context.getApplication();
                     application.getScannerRepo().getImportSuccessSignal().postValue(false);
-                    Toast.makeText(context, "Network Imported", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(context, ItemListActivity.class);
+                    Toast.makeText(context, "Settings updated", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(context, GroupListActivity.class);
                     context.startActivity(intent);
 
                 }

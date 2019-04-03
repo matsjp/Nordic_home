@@ -10,7 +10,7 @@
     android:divider="?android:attr/dividerHorizontal"
     android:orientation="horizontal"
     android:showDividers="middle"
-    tools:context=".ItemListActivity">
+    tools:context=".GroupListActivity">
 
     <!--
     This layout is a two-pane layout for the Items
@@ -59,7 +59,7 @@
             android:layout_marginRight="16dp"
             android:layout_marginBottom="0dp"
             app:layoutManager="LinearLayoutManager"
-            tools:context="com.tabletapp.nordichome.ItemListActivity"
+            tools:context="com.tabletapp.nordichome.GroupListActivity"
             tools:listitem="@layout/item_list_content" />
 
     </TableLayout>

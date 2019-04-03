@@ -20,7 +20,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".NetworkActivity"></activity>
         <activity
-            android:name=".ItemListActivity"
+            android:name=".GroupListActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -30,17 +30,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".HomePageActivity"
+            android:name=".StartPageActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name=".ItemDetailActivity"
+            android:name=".ScenesActivity"
             android:label="@string/title_item_detail"
-            android:parentActivityName=".ItemListActivity"
+            android:parentActivityName=".GroupListActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.tabletapp.nordichome.ItemListActivity" />
+                android:value="com.tabletapp.nordichome.GroupListActivity" />
         </activity>
     </application>
 

@@ -20,20 +20,20 @@ import no.nordicsemi.android.meshprovisioner.transport.SceneRecall;
 
 /**
  * A fragment representing a single Item detail screen.
- * This fragment is either contained in a {@link ItemListActivity}
- * in two-pane mode (on tablets) or a {@link ItemDetailActivity}
+ * This fragment is either contained in a {@link GroupListActivity}
+ * in two-pane mode (on tablets) or a {@link ScenesActivity}
  * on handsets.
  */
-public class ItemDetailFragment extends Fragment {
+public class GroupScenesFragment extends Fragment {
     /**
      * The fragment argument representing the item NAME that this fragment
      * represents.
      */
     public static final String ARG_ITEM_NAME = "item_name";
-    public static final String TAG = ItemDetailFragment.class.getSimpleName();
+    public static final String TAG = GroupScenesFragment.class.getSimpleName();
     private Group group;
 
-    public ItemDetailFragment() {
+    public GroupScenesFragment() {
     }
 
     @Override

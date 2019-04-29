@@ -6,9 +6,8 @@ import javafx.scene.Scene;
 public class Network {
     private String $schema, id, version, meshUUID, meshName, timestamp;
 
-    private ArrayList netKeys, appKeys, provisioners, scenes;
+    private ArrayList netKeys, appKeys, provisioners, nodes, scenes;
     private ArrayList <Groups> groups;
-    private ArrayList <Nodes> nodes;
 
 
     public Network(String $schema, String id, String version, String meshUUID, String meshName, String timestamp,
@@ -86,12 +85,6 @@ public class Network {
             }
         }
         return sceneAndId;
-    }
-
-    public ArrayList<Nodes> getNodes () {return nodes;}
-
-    public void setNodes (ArrayList<Nodes> newNodes) {
-        this.nodes.addAll(newNodes);
     }
 
 }

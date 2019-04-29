@@ -57,7 +57,7 @@ public class LoginController {
      */
     public void SendToNetworksPage(ActionEvent event) throws IOException, GeneralSecurityException {
         signIn();
-        URL url = new File("src/main/java/resources/Networks.fxml").toURI().toURL(); //"src/main/java/resources/Networks.fxml"
+        URL url = new File("src/main/java/resources/Networks.fxml").toURI().toURL();
 
         AnchorPane pane = FXMLLoader.load(url);
         loginScene.getChildren().setAll(pane);

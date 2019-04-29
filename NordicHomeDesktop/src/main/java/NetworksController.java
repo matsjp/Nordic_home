@@ -903,10 +903,6 @@ public class NetworksController {
 
     }
 
-    /**
-     * Converts from Network object to text string and saves it locally into JSON_networks folder
-     * @param network
-     */
     private void convertToJson (Network network) {
 
         Gson gsonBuilder = new GsonBuilder().create();
@@ -1025,7 +1021,7 @@ public class NetworksController {
                 }
 
             }
-            //TODO: Klarer ikke å generer den nye filen. ----- Feil i filepath??
+            //TODO: Klarer ikke å generer den nye filen. ----- Feil i filepath!!
 
     }
 
@@ -1074,7 +1070,8 @@ public class NetworksController {
     /**
      * Function for merging installers JSON into network JSON
      */
-    private void mergeInstallersJson(Network network) throws IOException{
+    private void mergInstallersJson(Network network) throws IOException{
+        ArrayList<Network> installerNets = new ArrayList<>();
         //Finding the JSON files in network folder
         FileList result = LoginController.getService().files().list()
                 .setQ("'" + getNetFolderId(network) + "' in parents")
@@ -1083,25 +1080,21 @@ public class NetworksController {
         List<File> files = result.getFiles();
         ArrayList<String> fileIds = new ArrayList<>();
         for (File fil : files) {
-            //From Json to java object, then merge
-            fileIds.add(fil.getId());
+            if(fil.getName().contains("_")){
+                //From Json to java object, then merge
+                fileIds.add(fil.getId());
+            }
         }
-        ArrayList<Network>listOfNets = DriveQuickstart.downloadFiles(LoginController.getService(), fileIds);
-        convertToJson(mergeObjects(listOfNets)); //Merge and convert to JSON. JSON saved locally.
-        putFileintoGDrive(network); //Updates the JSON-file on GDrive
+        installerNets = DriveQuickstart.downloadFiles(LoginController.getService(), fileIds);
     }
 
+
     /**
-     * Help function for merge InstallersJson function
+     * Help function for mergInstallersJson function
      */
 
-    public Network mergeObjects(ArrayList<Network> listOfNets){
-        //First generate new Network object
-        Network mergedNet = listOfNets.get(0);
-        for (Network net : listOfNets) {
-            mergedNet.setNodes(net.getNodes());
-        }
-        return mergedNet;
+    public void mergeObjects(){
+
     }
 
     //TODO: createFreshNetwork må flyttes ut av DriveQuickStart!

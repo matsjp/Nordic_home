@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXListView?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="networksScene" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="NetworksController">
+   <children>
+      <AnchorPane prefHeight="60.0" prefWidth="904.0">
+         <children>
+            <Label layoutX="14.0" layoutY="14.0" prefHeight="32.0" prefWidth="97.0" text="Networks">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+      <StackPane fx:id="stackPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0">
+         <children>
+            <AnchorPane prefHeight="600.0" prefWidth="601.0">
+               <children>
+                  <JFXButton fx:id="btnNewNetwork" buttonType="RAISED" layoutX="14.0" layoutY="509.0" onAction="#showNewNetworkDialog" prefHeight="32.0" prefWidth="200.0" style="-fx-background-color: #D6DBDF#D6DBDF;" text="New Network">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                     <font>
+                        <Font size="12.0" />
+                     </font>
+                  </JFXButton>
+                  <JFXListView fx:id="lwNetworkList" layoutX="14.0" layoutY="68.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="437.0" prefWidth="200.0" style="-fx-border-color: #A9A9A9#A9A9A9;" />
+                  <AnchorPane fx:id="apNetworkInfo" layoutX="222.0" layoutY="67.0" prefHeight="513.0" prefWidth="668.0">
+                     <children>
+                        <Label layoutX="14.0" layoutY="40.0" prefHeight="17.0" prefWidth="118.0" text="Network address:">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                        </Label>
+                        <JFXButton fx:id="btnNewGroup" layoutX="14.0" layoutY="220.0" onAction="#showNewGroupDialog" prefHeight="25.0" prefWidth="87.0" style="-fx-background-color: #D6DBDF#D6DBDF;" text="New Group" translateY="-5.0">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                           <font>
+                              <Font size="11.0" />
+                           </font>
+                        </JFXButton>
+                        <JFXListView fx:id="lvGroups" layoutX="14.0" layoutY="87.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="123.0" prefWidth="286.0" style="-fx-border-color: #A9A9A9#A9A9A9;">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor></JFXListView>
+                        <Label fx:id="lblGroups" layoutX="14.0" layoutY="70.0" prefHeight="17.0" prefWidth="57.0" text="Groups:" />
+                        <Label layoutX="14.0" layoutY="14.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="17.0" prefWidth="118.0" text="Network name:">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="lblNetworkName" layoutX="151.0" layoutY="14.0" prefHeight="17.0" prefWidth="189.0" />
+                        <Label fx:id="lblNetworkAddress" layoutX="151.0" layoutY="40.0" prefHeight="17.0" prefWidth="189.0" />
+                        <Label fx:id="lblGroups1" layoutX="319.0" layoutY="70.0" prefHeight="17.0" prefWidth="57.0" text="Scenes:" />
+                        <JFXListView fx:id="lvScenes" layoutX="319.0" layoutY="87.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="123.0" prefWidth="286.0" style="-fx-border-color: #A9A9A9#A9A9A9;">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor></JFXListView>
+                        <JFXButton fx:id="btnDeleteScene" disable="true" layoutX="319.0" layoutY="215.0" onAction="#deleteScene" prefHeight="25.0" prefWidth="87.0" style="-fx-background-color: #D6DBDF#D6DBDF;" text="Delete Scene">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                           <font>
+                              <Font size="11.0" />
+                           </font>
+                        </JFXButton>
+                        <JFXButton fx:id="btnExport" buttonType="RAISED" layoutX="536.0" layoutY="473.0" onAction="#exportNetwork" prefHeight="32.0" prefWidth="118.0" style="-fx-background-color: #D6DBDF#D6DBDF;" text="Export Network">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                           <font>
+                              <Font size="12.0" />
+                           </font>
+                        </JFXButton>
+                        <JFXButton fx:id="btnDeleteGroup" layoutX="108.0" layoutY="218.0" onAction="#deleteGroup" prefHeight="25.0" prefWidth="87.0" style="-fx-background-color: #D6DBDF#D6DBDF;" text="Delete Group" translateY="-3.0">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                           <font>
+                              <Font size="11.0" />
+                           </font>
+                        </JFXButton>
+                        <Label fx:id="lblGroups2" layoutX="14.0" layoutY="257.0" prefHeight="17.0" prefWidth="142.0" text="Shared with installers:" />
+                        <JFXListView fx:id="lvSharedInstallers" layoutX="14.0" layoutY="274.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="123.0" prefWidth="286.0" style="-fx-border-color: #A9A9A9#A9A9A9;">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor></JFXListView>
+                        <JFXButton fx:id="btnNewInstaller" layoutX="14.0" layoutY="402.0" onAction="#showNewInstallerDialog" prefHeight="25.0" prefWidth="87.0" style="-fx-background-color: #D6DBDF#D6DBDF;" text="New Installer">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                           <font>
+                              <Font size="11.0" />
+                           </font>
+                        </JFXButton>
+                        <JFXButton fx:id="btnRemoveInstaller" layoutX="107.0" layoutY="402.0" onAction="#deleteSharedInstaller" prefHeight="25.0" prefWidth="106.0" style="-fx-background-color: #D6DBDF#D6DBDF;" text="Remove Installer">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                           <font>
+                              <Font size="11.0" />
+                           </font>
+                        </JFXButton>
+                     </children>
+                  </AnchorPane>
+                  <JFXButton fx:id="btnDeleteNetwork" buttonType="RAISED" disable="true" layoutX="14.0" layoutY="548.0" onAction="#deleteNetwork" prefHeight="32.0" prefWidth="200.0" style="-fx-background-color: #D6DBDF#D6DBDF;" text="Delete Network">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                     <font>
+                        <Font size="12.0" />
+                     </font>
+                  </JFXButton>
+               </children>
+            </AnchorPane>
+         </children>
+      </StackPane>
+   </children>
+</AnchorPane>

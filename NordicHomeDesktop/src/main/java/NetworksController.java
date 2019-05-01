@@ -12,7 +12,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
-
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
@@ -20,12 +19,8 @@ import com.google.api.services.drive.model.FileList;
 import com.google.api.client.http.FileContent;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.client.googleapis.batch.json.JsonBatchCallback;
-
-
-
 import com.google.gson.*;
 import org.mortbay.util.IO;
-
 import java.io.*;
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -1101,12 +1096,12 @@ public class NetworksController {
         List<File> files = result.getFiles();
         ArrayList<String> fileIds = new ArrayList<>();
         for (File fil : files) {
-            //From Json to java object, then merge
-            fileIds.add(fil.getId());
+            if(fil.getName().contains("_")){
+                //From Json to java object, then merge
+                fileIds.add(fil.getId());
+            }
         }
-        ArrayList<Network>listOfNets = DriveQuickstart.downloadFiles(LoginController.getService(), fileIds);
-        convertToJson(mergeObjects(listOfNets)); //Merge and convert to JSON. JSON saved locally.
-        putFileintoGDrive(network); //Updates the JSON-file on GDrive
+        installerNets = DriveQuickstart.downloadFiles(LoginController.getService(), fileIds);
     }
 
 
@@ -1114,13 +1109,8 @@ public class NetworksController {
      * Help function for mergInstallersJson function
      */
 
-    public Network mergeObjects(ArrayList<Network> listOfNets){
-        //First generate new Network object
-        Network mergedNet = listOfNets.get(0);
-        for (Network net : listOfNets) {
-            mergedNet.setNodes(net.getNodes());
-        }
-        return mergedNet;
+    public void mergeObjects(){
+
     }
 
     //TODO: createFreshNetwork må flyttes ut av DriveQuickStart!

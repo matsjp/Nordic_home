@@ -8,3 +8,6 @@
  */
 
 rootProject.name = 'GDrive'
+
+include ':meshprovisioner'
+project(':meshprovisioner').projectDir = file('../meshprovisioner')

@@ -104,17 +104,17 @@ public class NetworksController {
     }
 
     public void newGroup(Network network, String groupName) {
-        String address = Integer.toString(network.getGroups().size()); // Not done properly
-        String parentAddress = "0000";
+        int address = network.getGroups().size()+1+49152;
+        int parentAddress = 0;
         Groups group = new Groups(groupName, address, parentAddress);
         network.getGroups().add(group);
 
         //Adding default scenes
-        Scenes onOffScene = new Scenes("On/Off", address, network.getScenes().size());
+        Scenes onOffScene = new Scenes("Lights off", Integer.toHexString(address), network.getScenes().size());
         network.getScenes().add(onOffScene);
-        Scenes dimFast = new Scenes("Dim fast", address, network.getScenes().size());
+        Scenes dimFast = new Scenes("Lights on", Integer.toHexString(address), network.getScenes().size());
         network.getScenes().add(dimFast);
-        Scenes dimSlow = new Scenes("Dim slow", address, network.getScenes().size());
+        Scenes dimSlow = new Scenes("Light dim", Integer.toHexString(address), network.getScenes().size());
         network.getScenes().add(dimSlow);
     }
 
@@ -497,8 +497,6 @@ public class NetworksController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 
 
@@ -593,11 +591,14 @@ public class NetworksController {
                     //Update the list view of shared emails ENDRE DENNE!
                     //updateSharedNetworkView(network);
 
-
-
                     //Check
                     //System.out.println("Shared e-mails: " + network.getSharedEmails());
                     System.out.println("Network: " + network.getMeshName());
+
+                    //Generates provision info in the Network object
+                    String username = sharedEmail.substring(0, sharedEmail.indexOf('@'));
+                    network.setProvisioner(username);
+
 
                     convertToJson(network);
                     putFileintoGDrive(network);
@@ -903,10 +904,30 @@ public class NetworksController {
 
     }
 
+    /**
+     * Removes a char from a string
+     * @param text
+     * @param place
+     * @return
+     */
+    private String removeChar (String text, int place) {
+        String newText = text.substring(0,place) + text.substring(place+1);
+        return newText;
+    }
+
+    /**
+     * Convert the Network object to JSON
+     * @param network
+     */
     private void convertToJson (Network network) {
 
         Gson gsonBuilder = new GsonBuilder().create();
         String jsonFromNetwork = gsonBuilder.toJson(network);
+
+        //Fixing small issues with netKeys/appKeys
+        String jsonFromNetworkTemp = removeChar(jsonFromNetwork, jsonFromNetwork.indexOf("appKeyss")+7);
+        String jsonFromNetworkToWrite = removeChar(jsonFromNetworkTemp, jsonFromNetworkTemp.lastIndexOf("netKeyss")+7);
+
         String meshName = network.getMeshName().replaceAll("\\s+","");
 
         String fileName = "src/main/java/JSON_networks/" + meshName;
@@ -927,7 +948,7 @@ public class NetworksController {
         }
         //Writes the JSON-file to the directory
         try (FileWriter file = new FileWriter(fileName + "/" + meshName + ".json")) {
-            file.write(jsonFromNetwork);
+            file.write(jsonFromNetworkToWrite);
             System.out.println("Successfully Copied JSON to File...");
         }
         catch (IOException e) {
@@ -1068,7 +1089,7 @@ public class NetworksController {
     }
 
     /**
-     * Function for merging installers JSON into network JSON
+     * Function for merging installers JSON into the original network JSON
      */
     private void mergInstallersJson(Network network) throws IOException{
         ArrayList<Network> installerNets = new ArrayList<>();
@@ -1080,12 +1101,12 @@ public class NetworksController {
         List<File> files = result.getFiles();
         ArrayList<String> fileIds = new ArrayList<>();
         for (File fil : files) {
-            if(fil.getName().contains("_")){
-                //From Json to java object, then merge
-                fileIds.add(fil.getId());
-            }
+            //From Json to java object, then merge
+            fileIds.add(fil.getId());
         }
-        installerNets = DriveQuickstart.downloadFiles(LoginController.getService(), fileIds);
+        ArrayList<Network>listOfNets = DriveQuickstart.downloadFiles(LoginController.getService(), fileIds);
+        convertToJson(mergeObjects(listOfNets)); //Merge and convert to JSON. JSON saved locally.
+        putFileintoGDrive(network); //Updates the JSON-file on GDrive
     }
 
 
@@ -1093,8 +1114,13 @@ public class NetworksController {
      * Help function for mergInstallersJson function
      */
 
-    public void mergeObjects(){
-
+    public Network mergeObjects(ArrayList<Network> listOfNets){
+        //First generate new Network object
+        Network mergedNet = listOfNets.get(0);
+        for (Network net : listOfNets) {
+            mergedNet.setNodes(net.getNodes());
+        }
+        return mergedNet;
     }
 
     //TODO: createFreshNetwork må flyttes ut av DriveQuickStart!
@@ -1104,6 +1130,7 @@ public class NetworksController {
     //TODO: Fjerne eposter fra JSON og heller sjekke filer fra Nettverksmappe i GDrive
     //TODO: Ikke skanne hele driven ved login. Sjekk etter appdata-mappe.
     //TODO: Add provisioners i JSON-filen
+    //TODO: NOE GALT MED NODES!
 
 
 }

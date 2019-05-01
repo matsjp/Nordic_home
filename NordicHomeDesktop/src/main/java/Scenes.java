@@ -8,9 +8,9 @@ import java.util.*;
 public class Scenes {
     private String name;
     private ArrayList <String> addresses;
-    private Integer number;
+    private int number;
 
-    public Scenes (String name, String address, Integer number) {
+    public Scenes (String name, String address, int number) {
         this.name = name;
         this.addresses = new ArrayList<>();
         this.addresses.add(address);
@@ -21,7 +21,7 @@ public class Scenes {
         return name;
     }
 
-    public Integer getNumber() {
+    public int getNumber() {
         return number;
     }
 

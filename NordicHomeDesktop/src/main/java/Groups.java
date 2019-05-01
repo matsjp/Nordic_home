@@ -7,9 +7,10 @@ import java.util.*;
 
 public class Groups {
 
-    private String name, address, parentAddress;
+    private String name;
+    private int address, parentAddress;
 
-    public Groups (String name, String address, String parentAddress) {
+    public Groups (String name, int address, int parentAddress) {
         this.name = name;
         this.address = address;
         this.parentAddress = parentAddress;
@@ -19,11 +20,11 @@ public class Groups {
         return name;
     }
 
-    public String getAddress() {
+    public int getAddress() {
         return address;
     }
 
-    public String getParentAddress() {
+    public int getParentAddress() {
         return parentAddress;
     }
 

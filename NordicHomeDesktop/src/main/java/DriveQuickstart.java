@@ -334,8 +334,8 @@ public class DriveQuickstart {
     public Network createFreshNetwork(String meshName) {
         final String meshUuid = UUID.randomUUID().toString().toUpperCase(Locale.US);
         final Long timeStamp = getInternationalAtomicTime(System.currentTimeMillis());
-        final String netKeys = "[]";
-        final String appKeys = "[]";
+        final NetKeys netKeys= new NetKeys();
+        final AppKeys appKeys = new AppKeys();
         final String provisioners = "[]";
         final String nodes = "[]";
         final String groups = "[]";

@@ -1,8 +1,8 @@
-public class AllocatedGroupRange {
+public class AllocGroupRange {
 
     private String highAddress, lowAddress;
 
-    public AllocatedGroupRange(String highAddress, String lowAddress) {
+    public AllocGroupRange(String highAddress, String lowAddress) {
         this.highAddress = highAddress;
         this.lowAddress = lowAddress;
     }

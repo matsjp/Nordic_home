@@ -51,6 +51,8 @@ public class LoginController {
         return service;
     }
 
+    //public AnchorPane getLoginScene() {return this.loginScene;}
+
     /**
      * SendToNetworksPage: Method that sends the user to the next page, the Networks page
      * @author Julie and Kaja

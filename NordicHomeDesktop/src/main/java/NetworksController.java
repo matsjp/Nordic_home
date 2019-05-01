@@ -6,6 +6,7 @@ import com.google.api.services.drive.model.PermissionList;
 import com.jfoenix.controls.*;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
@@ -21,14 +22,15 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.client.googleapis.batch.json.JsonBatchCallback;
 import com.google.gson.*;
 import org.mortbay.util.IO;
+
+import java.awt.event.ActionEvent;
 import java.io.*;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.nio.file.Files;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.net.URL;
+import java.nio.file.*;
 import java.lang.reflect.Array;
+import java.security.GeneralSecurityException;
 import java.util.*;
 
 
@@ -67,6 +69,8 @@ public class NetworksController {
     @FXML
     private JFXButton btnRemoveInstaller;
 
+    @FXML
+    private AnchorPane networksScene;
 
     //List with all networks
     ArrayList<Network> networks = new ArrayList<Network>();
@@ -87,6 +91,24 @@ public class NetworksController {
         showChosenNetwork();
         showChosenNetwork();
 
+    }
+
+    public void signOut () throws IOException, GeneralSecurityException {
+        URL url = new java.io.File("src/main/java/resources/Login.fxml").toURI().toURL();
+
+        AnchorPane pane = FXMLLoader.load(url);
+        networksScene.getChildren().setAll(pane);
+
+        try {
+            Path path = Paths.get("tokens/StoredCredential");
+            Files.delete(path);
+        } catch (NoSuchFileException x) {
+            x.printStackTrace();
+        } catch (DirectoryNotEmptyException d) {
+            d.printStackTrace();
+        } catch (IOException x) {
+            x.printStackTrace();
+        }
     }
 
     /**

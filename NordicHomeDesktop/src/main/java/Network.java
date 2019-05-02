@@ -113,7 +113,7 @@ public class Network {
         int installerCount = provisioners.size();
         int groupAddressRange = 49152;
 
-        AllocGroupRange aGroupRange = new AllocGroupRange(Integer.toHexString(1 + groupAddressRange + installerCount*1000), Integer.toHexString(1000 + groupAddressRange + installerCount*1000));
+        //AllocGroupRange aGroupRange = new AllocGroupRange(Integer.toHexString(1 + groupAddressRange + installerCount*1000), Integer.toHexString(1000 + groupAddressRange + installerCount*1000));
         AllocUnicastRange aUnicastRange = new AllocUnicastRange(Integer.toHexString(1 + installerCount*1000),Integer.toHexString(installerCount*1000+1000));
 
         //final AllocatedGroupRange groupRange = new AllocatedGroupRange(MeshParserUtils.intToBytes(1 + groupAddressRange + installerCount*1000),MeshParserUtils.intToBytes(1000 + groupAddressRange + installerCount*1000));
@@ -121,11 +121,11 @@ public class Network {
 
 
         final List<AllocUnicastRange> uRanges = new ArrayList<>();
-        final List<AllocGroupRange> gRanges = new ArrayList<>();
-        gRanges.add(aGroupRange);
+        //final List<AllocGroupRange> gRanges = new ArrayList<>();
+        //gRanges.add(aGroupRange);
         uRanges.add(aUnicastRange);
 
-        final Provisioners provisioner = new Provisioners(username, provisionerUuid, gRanges, uRanges);
+        final Provisioners provisioner = new Provisioners(username, provisionerUuid, uRanges); //Not using gRanges
 
         return provisioner;
 

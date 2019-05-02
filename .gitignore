@@ -193,6 +193,6 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-/NordicHomeDesktop/tokens/StoredCredential
+/NordicHomeDesktop/tokens/StoredCredential.json
 
 # End of https://www.gitignore.io/api/macos,windows,androidstudio

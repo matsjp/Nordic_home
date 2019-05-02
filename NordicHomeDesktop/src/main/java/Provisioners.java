@@ -7,7 +7,7 @@ public class Provisioners {
     private List <AllocUnicastRange> allocatedUnicastRange;
     //private List <AllocatedSceneRange> allocatedSceneRange;
 
-    public Provisioners (String provisionerName, String UUID, String GroupRangeString, String UnicastRangeString) {       //String SceneRangeString (Not using this)
+    public Provisioners (String provisionerName, String UUID, String UnicastRangeString) {       //String SceneRangeString (Not using this) //String GroupRangeString
         this.provisionerName = provisionerName;
         this.UUID = UUID;
         this.allocatedGroupRange = Network.makeObjectArray(GroupRangeString);
@@ -15,7 +15,7 @@ public class Provisioners {
         //this.allocatedSceneRange = Network.makeObjectArray(SceneRangeString);
     }
 
-    public Provisioners (String provisionerName, String UUID, List<AllocGroupRange> allocatedGroupRange, List<AllocUnicastRange> allocatedUnicastRange) {   //Not using: List<AllocatedSceneRange> allocatedSceneRange
+    public Provisioners (String provisionerName, String UUID, List<AllocUnicastRange> allocatedUnicastRange) {   //Not using: List<AllocatedSceneRange> allocatedSceneRange //List<AllocGroupRange> allocatedGroupRange
         this.provisionerName = provisionerName;
         this.UUID = UUID;
         this.allocatedGroupRange = allocatedGroupRange;

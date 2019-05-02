@@ -9,10 +9,11 @@ import javafx.scene.shape.Mesh;
 public class Network {
     private String $schema, id, version, meshUUID, meshName, timestamp;
 
-    private ArrayList netKeys, appKeys, scenes;
+    private ArrayList netKeys, appKeys;
     private ArrayList<NetKeys> netKeyss;
     private ArrayList<AppKeys> appKeyss;
     private ArrayList <Groups> groups;
+    private ArrayList <Scenes> scenes;
     private ArrayList <Nodes> nodes;
     private List<Provisioners> provisioners;
 
@@ -152,7 +153,7 @@ public class Network {
         ArrayList <Scenes> scenes = getScenes();
         ArrayList <Scenes> sceneAndId = new ArrayList<>();
         for (Scenes scene : scenes) {
-            if (scene.getAddresses().contains(group.getAddress())) {
+            if (scene.getAddresses().contains(Integer.toHexString(group.getAddress()))) {
                 sceneAndId.add(scene);
             }
         }

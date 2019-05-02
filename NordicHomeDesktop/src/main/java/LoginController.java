@@ -63,6 +63,7 @@ public class LoginController {
 
         AnchorPane pane = FXMLLoader.load(url);
         loginScene.getChildren().setAll(pane);
+        //Main.getPrimaryStage().setMaximized(false);
 
     }
 

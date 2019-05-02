@@ -17,6 +17,12 @@ public class Scenes {
         this.number = number;
     }
 
+    public Scenes (String name, ArrayList<String> addresses, int number) {
+        this.name = name;
+        this.addresses = addresses;
+        this.number = number;
+    }
+
     public String getName() {
         return name;
     }
@@ -25,7 +31,7 @@ public class Scenes {
         return number;
     }
 
-    public ArrayList getAddresses() {
+    public ArrayList<String> getAddresses() {
         return addresses;
     }
 }

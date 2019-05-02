@@ -1,8 +1,8 @@
 import com.google.api.client.googleapis.batch.BatchRequest;
 import com.google.api.client.googleapis.json.GoogleJsonError;
 import com.google.api.client.http.HttpHeaders;
-import com.google.api.services.drive.model.Permission;
-import com.google.api.services.drive.model.PermissionList;
+import com.google.api.services.drive.model.*;
+import com.google.api.services.drive.model.File;
 import com.jfoenix.controls.*;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
@@ -15,8 +15,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
-import com.google.api.services.drive.model.File;
-import com.google.api.services.drive.model.FileList;
 import com.google.api.client.http.FileContent;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.client.googleapis.batch.json.JsonBatchCallback;
@@ -72,8 +70,13 @@ public class NetworksController {
     @FXML
     private AnchorPane networksScene;
 
+    @FXML
+    private Label lblemail;
+
     //List with all networks
-    ArrayList<Network> networks = new ArrayList<Network>();
+    private ArrayList<Network> networks = new ArrayList<>();
+
+
 
 
     public Network networkChosen = null;
@@ -87,8 +90,16 @@ public class NetworksController {
     private void initialize() throws IOException{
         ArrayList<String> idOfFiles = DriveQuickstart.getJSONfiles(LoginController.getService()); //Finner JSON-filer på Driven, må flyttes vekk fra DriveQuickstart
         networks.addAll(DriveQuickstart.downloadFiles(LoginController.getService(),idOfFiles)); //Generates the network list
+
+
+        About user = LoginController.getService().about().get()
+                .setFields("*")
+                .execute();
+
+        String email = user.getUser().getEmailAddress();
+        lblemail.setText(email); //Sets
+
         showNetworks();
-        showChosenNetwork();
         showChosenNetwork();
 
     }
@@ -99,6 +110,7 @@ public class NetworksController {
         AnchorPane pane = FXMLLoader.load(url);
         networksScene.getChildren().setAll(pane);
 
+        //Deleting Google StoredCredential file from directory
         try {
             Path path = Paths.get("tokens/StoredCredential");
             Files.delete(path);
@@ -199,6 +211,7 @@ public class NetworksController {
 
                     //Adding the new network to the list of networks
                     newNetwork(name);
+                    System.out.println(networks.get(0).getMeshName() + networks.get(0).getMeshUUID() + "<--------TEST"); // TEST TEST TEST
 
                     //Updating the listview
                     lwNetworkList.getItems().clear();
@@ -230,8 +243,6 @@ public class NetworksController {
                 e.printStackTrace();
             }
         });
-
-
     }
 
 
@@ -269,7 +280,6 @@ public class NetworksController {
                     }
                 }
             });
-
             showScenesForChosenGroup(network);
             showSharedInstallers(network);
         }
@@ -419,11 +429,8 @@ public class NetworksController {
                     String groupName = group.getText();
                     Network network = lwNetworkList.getSelectionModel().getSelectedItem();
 
-                    //Er det Network-objekter på lwNetworkList?
-
                     //Add the new group to the network
                     newGroup(network, groupName);
-                    //network.addGroup(groupName);
 
                     //Update the list view
                     updateGroupListView(network); //network.getName? Grupper addes ikke. Må fikses. Eller vises feil hvertfall.

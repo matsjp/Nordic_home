@@ -8,6 +8,8 @@ import java.io.*;
 
 public class Main extends Application {
 
+    private static Stage primaryStage;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
 
@@ -19,7 +21,14 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.setMaximized(true);
         primaryStage.show();
+
+        this.primaryStage = primaryStage;
     }
+
+    public static Stage getPrimaryStage() {
+        return primaryStage;
+    }
+
 
 
     public static void main(String[] args) {
